@@ -100,7 +100,7 @@
    "−9.2 (−18.1 to +0.4)"
   ],
   [
-   "Decided, adjusted for first-team strength",
+   "Decided, adjusted for first-team performance",
    "−3.6 (−11.9 to +5.1)"
   ],
   [
@@ -108,7 +108,7 @@
    "−19.3 (−22.1 to −15.7)"
   ],
   [
-   "Fully verified, all attempted papers, adjusted for first-team strength",
+   "Fully verified, all attempted papers, adjusted for first-team performance",
    "−11.7 (−14.7 to −8.0)"
   ],
   [
@@ -116,11 +116,11 @@
    "−19.1 (−27.3 to −10.9)"
   ],
   [
-   "Fully verified, subsample, adjusted for first-team strength",
+   "Fully verified, subsample, adjusted for first-team performance",
    "−13.0 (−20.7 to −5.1)"
   ],
   [
-   "Fully verified, subsample, adjusted for strength and claim cost",
+   "Fully verified, subsample, adjusted for first-team performance and claim requirements",
    "−5.6 (−11.9 to +1.4)"
   ],
   [
@@ -178,8 +178,8 @@
   [
    "Practice",
    "Main analysis: known value",
-   "Empirical papers only: known value",
-   "All coded papers, unclear counted as none"
+   "Papers reporting a training-set size",
+   "All coded papers, unclear as no reported release"
   ],
   [
    "Code released",
@@ -276,10 +276,10 @@
   ]
  ],
  "captions": {
-  "table1": "Medical papers state most reproducibility practices more often than other papers; only linking claims to results is rarer. Practices stated in the full text, medical versus other papers, nine venue-years. Shares among papers with a known value; pooled difference is the Mantel-Haenszel risk difference over venue-years with a 95% paper bootstrap interval.",
-  "table2": "The gap in being decided disappears after adjusting for the strength of the first team; the gap in full verification needs claim cost as well. Reproduction outcomes of attempted ICML 2026 papers, medical minus other, unadjusted and adjusted (post hoc analyses, Notes 9-9 to 9-15).",
-  "table3": "What papers state agrees poorly with what reproducers obtained, except for weights. Agreement on the 222 attempted ICML 2026 frame papers; the last column pools them with the 300-paper extension sample.",
-  "table4": "The documentation differences hold among empirical papers; with unstated releases counted as none, only the open-data difference stays large. Medical minus other, Mantel-Haenszel over venue-years, points with 95% CI (post hoc, Note 9-22).",
-  "tablea1": "Full texts were nearly complete where open proceedings exist and missing most often at NeurIPS 2026. Papers in the frame and with a coded full text, by group and venue-year."
+  "table1": "Reported reproducibility practices, medical versus other papers, nine venue-years. Medical papers had higher reporting rates for nine of ten indicators. Shares among papers with a known value; pooled difference is the Mantel-Haenszel risk difference over venue-years with a 95% paper bootstrap interval.",
+  "table2": "Unadjusted and adjusted differences in reproduction outcomes of attempted ICML 2026 papers, medical minus other (post hoc analyses, Notes 9-9 to 9-15). Rows marked subsample use the 220 papers with coded claim requirements.",
+  "table3": "Agreement between reported practices and logbook evidence of material use, 222 attempted ICML 2026 frame papers; the last column pools them with the 300-paper extension sample. Agreement was limited for code and data and higher for weights.",
+  "table4": "Sensitivity analyses of reported practices, medical minus other, Mantel-Haenszel over venue-years, percentage points with 95% CI (post hoc, Note 9-22): main analysis, papers reporting a training-set size, and all coded papers with unclear treated as no reported release.",
+  "tablea1": "Papers in the frame and with a coded full text, by group and venue-year. Retrieval was nearly complete where open proceedings exist and lowest at NeurIPS 2026."
  }
 }

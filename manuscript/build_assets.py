@@ -72,7 +72,7 @@ def summary(p9, areas, ext, claims, more, emp) -> None:
                   rd("main_data_access")),
                  ("Variance reported", sh("variance", "life_science"), sh("variance", "other"), rd("variance")),
                  ("Claims tied to a result", sh("claims", "life_science"), sh("claims", "other"), rd("claims"))],
-             "(a) On paper: medical papers state more")
+             "(a) Reported practices")
     b = fig.add_subplot(gs[0, 1])
     dumbbell(b, [("Paper decided", areas["PH9_c"]["medical"]["decided"], oth_decided,
                   f"{pts(d['unadjusted']['rd'])} pts"),
@@ -80,15 +80,15 @@ def summary(p9, areas, ext, claims, more, emp) -> None:
                   ""),
                  ("Claims inconclusive", ec["medical"]["claim_share"]["inconclusive"],
                   ec["other"]["claim_share"]["inconclusive"], "")],
-             "(b) In practice: settled less often")
+             "(b) Reproduction outcomes")
     b.set_xlabel("% of attempted ICML 2026 papers or claims")
     c = fig.add_subplot(gs[1, 0])
     steps = [("Decided, as observed", d["unadjusted"]),
              ("> same team, claim level", d["claim_level_within_team"]),
-             ("> after first-team strength", ext["E1"]["decided"]["adjusted"]),
+             ("> after first-team performance", ext["E1"]["decided"]["adjusted"]),
              ("Fully verified, as observed", ext["E4"]["fully_verified"]["unadjusted"]),
-             ("> after first-team strength", more["G1"]["adj_strength"]),
-             ("> + claim cost (220 papers)", claims["K3"]["strength_and_cost"])]
+             ("> after first-team performance", more["G1"]["adj_strength"]),
+             ("> + claim requirements (220 papers)", claims["K3"]["strength_and_cost"])]
     for i, (label, x) in enumerate(reversed(steps)):
         clear = x["ci"][0] > 0 or x["ci"][1] < 0
         c.plot([100 * x["ci"][0], 100 * x["ci"][1]], [i, i], color=MED, lw=1.8, alpha=0.45, solid_capstyle="round")
@@ -98,25 +98,26 @@ def summary(p9, areas, ext, claims, more, emp) -> None:
     c.set_yticks(range(len(steps)), [s[0] for s in reversed(steps)])
     c.set_xlim(-32, 22)
     c.set_ylim(-0.6, len(steps) - 0.4)
-    c.set_xlabel("Gap, medical minus other, points (95% CI)")
-    c.set_title("(c) Why: the gap follows who takes the paper", loc="left", fontsize=9)
+    c.set_xlabel("Medical minus other, percentage points (95% CI)")
+    c.set_title("(c) Unadjusted and adjusted differences", loc="left", fontsize=9)
     for s in ("top", "right", "left"):
         c.spines[s].set_visible(False)
     c.tick_params(axis="y", length=0)
     e = fig.add_subplot(gs[1, 1])
     a4 = p9["A9_4"]
-    kap = [("Code link vs code run", a4["code_vs_code_used"]["kappa"]),
-           ("Open data vs data obtained", a4["main_data_access_vs_data_obtained"]["kappa"]),
-           ("Weights vs weights used", a4["weights_release_vs_weights_used"]["kappa"])]
+    kap = [("Code: reported vs run", a4["code_vs_code_used"]["kappa"]),
+           ("Data: open vs obtained", a4["main_data_access_vs_data_obtained"]["kappa"]),
+           ("Weights: reported vs used", a4["weights_release_vs_weights_used"]["kappa"])]
     for i, (label, k) in enumerate(reversed(kap)):
         e.barh(i, k, height=0.5, color=INK2)
         e.text(k + 0.02, i, f"{k:.2f}", va="center", fontsize=7.5, color=INK)
     e.axvline(0.40, color=GRID, lw=0.8, ls=(0, (3, 2)))
-    e.text(0.42, len(kap) - 0.62, "kappa 0.40", fontsize=7, color=INK2)
+    e.text(0.42, len(kap) - 0.3, "kappa 0.40", fontsize=7, color=INK2)
     e.set_yticks(range(len(kap)), [k[0] for k in reversed(kap)])
     e.set_xlim(0, 1)
-    e.set_xlabel("Cohen's kappa, stated vs obtained")
-    e.set_title("(d) Stated is not obtained", loc="left", fontsize=9)
+    e.set_ylim(-0.6, len(kap) - 0.05)
+    e.set_xlabel("Cohen's kappa, reported vs logbook evidence")
+    e.set_title("(d) Reported vs logbook evidence", loc="left", fontsize=9)
     for s in ("top", "right", "left"):
         e.spines[s].set_visible(False)
     e.tick_params(axis="y", length=0)
@@ -127,20 +128,20 @@ def summary(p9, areas, ext, claims, more, emp) -> None:
 
 # Table captions: first sentence is what the reader should see, then what the table is. Read by both builders.
 CAPTIONS = {
-    "table1": "Medical papers state most reproducibility practices more often than other papers; only linking claims to "
-              "results is rarer. Practices stated in the full text, medical versus other papers, nine venue-years. "
-              "Shares among papers with a known value; pooled difference is the Mantel-Haenszel risk difference over "
-              "venue-years with a 95% paper bootstrap interval.",
-    "table2": "The gap in being decided disappears after adjusting for the strength of the first team; the gap in full "
-              "verification needs claim cost as well. Reproduction outcomes of attempted ICML 2026 papers, medical "
-              "minus other, unadjusted and adjusted (post hoc analyses, Notes 9-9 to 9-15).",
-    "table3": "What papers state agrees poorly with what reproducers obtained, except for weights. Agreement on the 222 "
-              "attempted ICML 2026 frame papers; the last column pools them with the 300-paper extension sample.",
-    "table4": "The documentation differences hold among empirical papers; with unstated releases counted as none, only "
-              "the open-data difference stays large. Medical minus other, Mantel-Haenszel over venue-years, points "
-              "with 95% CI (post hoc, Note 9-22).",
-    "tablea1": "Full texts were nearly complete where open proceedings exist and missing most often at NeurIPS 2026. "
-               "Papers in the frame and with a coded full text, by group and venue-year.",
+    "table1": "Reported reproducibility practices, medical versus other papers, nine venue-years. Medical papers had "
+              "higher reporting rates for nine of ten indicators. Shares among papers with a known value; pooled "
+              "difference is the Mantel-Haenszel risk difference over venue-years with a 95% paper bootstrap interval.",
+    "table2": "Unadjusted and adjusted differences in reproduction outcomes of attempted ICML 2026 papers, medical minus "
+              "other (post hoc analyses, Notes 9-9 to 9-15). Rows marked subsample use the 220 papers with coded claim "
+              "requirements.",
+    "table3": "Agreement between reported practices and logbook evidence of material use, 222 attempted ICML 2026 frame "
+              "papers; the last column pools them with the 300-paper extension sample. Agreement was limited for code "
+              "and data and higher for weights.",
+    "table4": "Sensitivity analyses of reported practices, medical minus other, Mantel-Haenszel over venue-years, "
+              "percentage points with 95% CI (post hoc, Note 9-22): main analysis, papers reporting a training-set "
+              "size, and all coded papers with unclear treated as no reported release.",
+    "tablea1": "Papers in the frame and with a coded full text, by group and venue-year. Retrieval was nearly complete "
+               "where open proceedings exist and lowest at NeurIPS 2026.",
 }
 
 
@@ -183,12 +184,12 @@ def table2(areas: dict, ext: dict, claims: dict, adv: dict, more: dict) -> list[
             ["Decided, clinical papers only", est(adv["F2"]["label_split"]["clinical"])],
             ["Decided, life-science papers only", est(adv["F2"]["label_split"]["life_science"])],
             ["Decided, adjusted for number of teams", est(d["teams"])],
-            ["Decided, adjusted for first-team strength", est(e1["decided"]["adjusted"])],
+            ["Decided, adjusted for first-team performance", est(e1["decided"]["adjusted"])],
             ["Fully verified, all attempted papers, unadjusted", est(e4["fully_verified"]["unadjusted"])],
-            ["Fully verified, all attempted papers, adjusted for first-team strength", est(more["G1"]["adj_strength"])],
+            ["Fully verified, all attempted papers, adjusted for first-team performance", est(more["G1"]["adj_strength"])],
             ["Fully verified, claim-coded subsample (220 papers), unadjusted", est(k3["unadjusted"])],
-            ["Fully verified, subsample, adjusted for first-team strength", est(k3["strength"])],
-            ["Fully verified, subsample, adjusted for strength and claim cost", est(k3["strength_and_cost"])],
+            ["Fully verified, subsample, adjusted for first-team performance", est(k3["strength"])],
+            ["Fully verified, subsample, adjusted for first-team performance and claim requirements", est(k3["strength_and_cost"])],
             ["Claim decided, unadjusted (claim level)", est(d["claim_level_unadjusted"])],
             ["Claim decided, within team (claim level)", est(d["claim_level_within_team"])]]
 
@@ -210,8 +211,8 @@ def table3(p9: dict, ext: dict) -> list[list[str]]:
 
 
 def table4(p9: dict, emp: dict) -> list[list[str]]:
-    rows = [["Practice", "Main analysis: known value", "Empirical papers only: known value",
-             "All coded papers, unclear counted as none"]]
+    rows = [["Practice", "Main analysis: known value", "Papers reporting a training-set size",
+             "All coded papers, unclear as no reported release"]]
     for f in ("code", "main_data_access", "weights_release", "variance", "synthetic_or_sample_release",
               "outputs_release"):
         a = p9["A9_3"][f]
@@ -338,10 +339,10 @@ def main() -> None:
              ("Decided, clinical papers only", adv["F2"]["label_split"]["clinical"]),
              ("Decided, life-science papers only", adv["F2"]["label_split"]["life_science"]),
              ("Decided, adjusted for number of teams", d["teams"]),
-             ("Decided, adjusted for first-team strength", ext["E1"]["decided"]["adjusted"]),
+             ("Decided, adjusted for first-team performance", ext["E1"]["decided"]["adjusted"]),
              ("Fully verified, unadjusted", ext["E4"]["fully_verified"]["unadjusted"]),
-             ("Fully verified, adjusted for first-team strength", more["G1"]["adj_strength"]),
-             ("Fully verified, subsample, strength and claim cost", claims["K3"]["strength_and_cost"])]
+             ("Fully verified, adjusted for first-team performance", more["G1"]["adj_strength"]),
+             ("Fully verified, subsample, performance and claim requirements", claims["K3"]["strength_and_cost"])]
     claim = [("Claim decided, unadjusted", d["claim_level_unadjusted"]),
              ("Claim decided, within team", d["claim_level_within_team"])]
     fig, (a1, a2) = plt.subplots(2, 1, figsize=(6.3, 5.4), gridspec_kw=dict(height_ratios=[len(paper), len(claim) + 0.6]),
@@ -360,53 +361,87 @@ def main() -> None:
 def checks(p9, areas, ext, claims, adv, ext9, more, emp) -> list[str]:
     """Quoted text that must appear verbatim in manuscript.md, each built from a result file."""
     a3, a5, d, ea, eb, ec = p9["A9_3"], p9["A9_5"], areas["PH9_d"], emp["E_a"], emp["E_b"], emp["E_c"]
+    ph9b = load("p9_posthoc.json")["PH9_b"]
     sh = lambda f, g: pct(a3[f][g]["share"])
+    mh = lambda f: dict(rd=a3[f]["mh_rd"], ci=a3[f]["mh_ci"])
+    pair = lambda x: f"{pts(x['rd'])}, {ci(x['ci'])}"
+    s1 = ext["E1"]["first_team_strength"]
+    f2, e4, k1, k3, a4 = adv["F2"], ext["E4"], claims["K1"], claims["K3"], p9["A9_4"]
     want = [
-        f"{sh('code', 'life_science')}% of papers with a known value against {sh('code', 'other')}% (pooled difference {pts(a3['code']['mh_rd'])} points, 95% CI {ci(a3['code']['mh_ci'])})",
-        f"{sh('main_data_access', 'life_science')}% against {sh('main_data_access', 'other')}% ({est(dict(rd=a3['main_data_access']['mh_rd'], ci=a3['main_data_access']['mh_ci']))[:-1].replace(' (', ', ', 1)})",
-        f"{sh('weights_release', 'life_science')}% against {sh('weights_release', 'other')}% ({pts(a3['weights_release']['mh_rd'])}, {ci(a3['weights_release']['mh_ci'])})",
-        f"{sh('variance', 'life_science')}% against {sh('variance', 'other')}% ({pts(a3['variance']['mh_rd'])}, {ci(a3['variance']['mh_ci'])})",
-        f"({sh('claims', 'life_science')}% against {sh('claims', 'other')}%, {pts(a3['claims']['mh_rd'])} points, {ci(a3['claims']['mh_ci'])})",
-        f"Among the {ea['units']['medical']:,} medical and {ea['units']['other']:,} other papers",
-        f"code {pts(ea['fields']['code']['rd'])} ({ci(ea['fields']['code']['ci'])}), open main data {pts(ea['fields']['main_data_access']['rd'])} ({ci(ea['fields']['main_data_access']['ci'])}), weights {pts(ea['fields']['weights_release']['rd'])} ({ci(ea['fields']['weights_release']['ci'])}) and variance {pts(ea['fields']['variance']['rd'])} ({ci(ea['fields']['variance']['ci'])})",
-        f"({pct(eb['main_data_access']['share']['medical'])}% against {pct(eb['main_data_access']['share']['other'])}%, {pts(eb['main_data_access']['rd'])}, {ci(eb['main_data_access']['ci'])})",
-        f"fell to {pts(eb['weights_release']['rd'])} points ({ci(eb['weights_release']['ci'])})",
-        f"synthetic or sample data ({pts(eb['synthetic_or_sample_release']['rd'])}, {ci(eb['synthetic_or_sample_release']['ci'])}) and outputs ({pts(eb['outputs_release']['rd'])}, {ci(eb['outputs_release']['ci'])})",
-        f"rated verified in {pct(ec['medical']['claim_share']['verified'])}% against {pct(ec['other']['claim_share']['verified'])}% and inconclusive in {pct(ec['medical']['claim_share']['inconclusive'])}% against {pct(ec['other']['claim_share']['inconclusive'])}%",
-        f"({pct(ec['medical']['claim_share']['toy'])}% against {pct(ec['other']['claim_share']['toy'])}%, {pts(ec['toy_claim_diff']['rd'])}, {ci(ec['toy_claim_diff']['ci'])})",
-        f"{pct(a5['cells']['life_science']['decided'])}% of medical papers were decided",
-        f"{pts(d['unadjusted']['rd'])} points (95% CI {ci(d['unadjusted']['ci'])}; permutation p < 0.001)",
-        f"clinical papers ({est(adv['F2']['label_split']['clinical'])[:-1].replace(' (', ', ', 1)})",
-        f"life-science papers ({est(adv['F2']['label_split']['life_science'])[:-1].replace(' (', ', ', 1)})",
-        f"was dropped ({est(adv['F2']['top_medical_team_dropped'])[:-1].replace(' (', ', ', 1)})",
-        f"full verification ({est(ext['E4']['fully_verified']['unadjusted'])[:-1].replace(' (', ', ', 1)})",
-        f"falsified claim ({est(ext['E4']['any_falsified']['unadjusted'])[:-1].replace(' (', ', ', 1)})",
-        f"the gap was {pts(a5['unadjusted']['rd'])} points ({ci(a5['unadjusted']['ci'])})",
-        f"left it at {est(a5['both'])}",
-        f"3.6 points less often than claims of other papers ({ci(d['claim_level_within_team']['ci'])})",
-        f"{pts(-d['claim_level_unadjusted']['rd']).lstrip('+')} points less often without",
-        f"settled {pct(ext['E1']['first_team_strength']['mean'][0])}% of its other attempted papers, against {pct(ext['E1']['first_team_strength']['mean'][1])}%",
-        f"({est(dict(rd=ext['E1']['first_team_strength']['diff'], ci=ext['E1']['first_team_strength']['ci']))[:-1].replace(' (', ', ', 1)})",
-        f"on {more['G2']['papers']} papers attempted by at least two teams, the stronger team decided the same paper {pct(more['G2']['rd'])} points more often than the weaker one ({ci(more['G2']['ci'])})",
-        f"to {est(ext['E1']['decided']['adjusted'])[:-1].replace(' (', ' points (', 1)})",
-        f"that gap was {est(more['G1']['adj_strength'])[:-1].replace(' (', ' points (', 1)}) after the adjustment",
-        f"{pct(claims['K1']['costly']['medical'])}% of medical against {pct(claims['K1']['costly']['other'])}% of other claims",
-        f"({est(dict(rd=claims['K1']['costly']['diff'], ci=claims['K1']['costly']['ci']))[:-1].replace(' (', ', ', 1)})",
-        f"({pct(claims['K1']['analytic']['medical'])}% against {pct(claims['K1']['analytic']['other'])}%)",
-        f"the full-verification gap was {pts(claims['K3']['unadjusted']['rd'])} points, {est(claims['K3']['strength'])} after adjusting",
-        f"and {est(claims['K3']['strength_and_cost'])} after adjusting for both",
-        f"kappa {p9['A9_4']['code_vs_code_used']['kappa']:.2f}; n = {p9['A9_4']['code_vs_code_used']['n']}",
-        f"kappa {p9['A9_4']['main_data_access_vs_data_obtained']['kappa']:.2f}, n = {p9['A9_4']['main_data_access_vs_data_obtained']['n']}",
-        f"kappas were {ext9['pooled']['code_vs_code_used']['kappa']:.2f} (n = {ext9['pooled']['code_vs_code_used']['n']})",
+        # Reported practices
+        f"code release ({sh('code', 'life_science')}% versus {sh('code', 'other')}%; pooled difference "
+        f"{pts(a3['code']['mh_rd'])} percentage points, 95% CI {ci(a3['code']['mh_ci'])})",
+        f"open main data ({sh('main_data_access', 'life_science')}% versus {sh('main_data_access', 'other')}%; "
+        f"{pair(mh('main_data_access'))})",
+        f"weights release ({sh('weights_release', 'life_science')}% versus {sh('weights_release', 'other')}%; "
+        f"{pair(mh('weights_release'))})",
+        f"variance ({sh('variance', 'life_science')}% versus {sh('variance', 'other')}%; {pair(mh('variance'))})",
+        f"({sh('claims', 'life_science')}% versus {sh('claims', 'other')}%; {pair(mh('claims'))})",
         f"(+7.5, {ci(ext['E5']['vision']['main_data_access']['ci'])})",
-        f"{p9['adjudicated']:,} items",
-        f"(adjusted {est(load('p9_posthoc.json')['PH9_b'])[:-1].replace(' (', ' points, ', 1)}; {load('p9_posthoc.json')['PH9_b']['n']} frame papers)",
-        f"({load('p9_posthoc.json')['PH9_b']['distribution']['life_science']['listed_and_linked']} medical and {load('p9_posthoc.json')['PH9_b']['distribution']['other']['listed_and_linked']} other papers)",
-        f"theorem ({pct(a3['claims']['life_science']['share'])}% versus {pct(a3['claims']['other']['share'])}%)",
-        f"Only {pct(a3['claims']['life_science']['share'])}% of medical and {pct(a3['claims']['other']['share'])}% of other papers did so",
-        f"Access could not be coded from the text for {a3['main_data_access']['life_science']['unclear']} of {a3['main_data_access']['life_science']['n']:,} medical papers",
-        f"Weights were unstated in {a3['weights_release']['life_science']['unclear']:,} of {a3['weights_release']['life_science']['n']:,} medical papers",
-        f"The compute tier was unstated in {a3['compute_tier']['life_science']['distribution']['not_stated']:,} of {a3['compute_tier']['life_science']['n']:,} medical papers",
+        f"Among the {ea['units']['medical']:,} medical and {ea['units']['other']:,} other papers reporting a "
+        f"training-set size",
+        f"code {pts(ea['fields']['code']['rd'])} percentage points ({ci(ea['fields']['code']['ci'])}), open main data "
+        f"{pts(ea['fields']['main_data_access']['rd'])} ({ci(ea['fields']['main_data_access']['ci'])}), weights "
+        f"{pts(ea['fields']['weights_release']['rd'])} ({ci(ea['fields']['weights_release']['ci'])}) and variance "
+        f"{pts(ea['fields']['variance']['rd'])} ({ci(ea['fields']['variance']['ci'])})",
+        f"({pct(eb['main_data_access']['share']['medical'])}% versus {pct(eb['main_data_access']['share']['other'])}%; "
+        f"{pair(eb['main_data_access'])})",
+        f"decreased to {pts(eb['weights_release']['rd'])} percentage points ({ci(eb['weights_release']['ci'])})",
+        f"sample or synthetic data ({pair(eb['synthetic_or_sample_release'])}) and outputs ({pair(eb['outputs_release'])})",
+        # Reproduction outcomes
+        f"{pct(a5['cells']['life_science']['decided'])}% of medical papers were decided",
+        f"{pts(d['unadjusted']['rd'])} percentage points (95% CI {ci(d['unadjusted']['ci'])}; permutation p < 0.001)",
+        f"{pts(f2['label_split']['clinical']['rd'])} percentage points for clinical papers "
+        f"(95% CI {ci(f2['label_split']['clinical']['ci'])})",
+        f"{pts(f2['label_split']['life_science']['rd'])} for life-science papers ({ci(f2['label_split']['life_science']['ci'])})",
+        f"{pts(f2['top_medical_team_dropped']['rd'])} ({ci(f2['top_medical_team_dropped']['ci'])}) when every logbook",
+        f"full verification ({pair(e4['fully_verified']['unadjusted'])})",
+        f"falsified claim ({pair(e4['any_falsified']['unadjusted'])})",
+        f"rated verified in {pct(ec['medical']['claim_share']['verified'])}% against "
+        f"{pct(ec['other']['claim_share']['verified'])}% and inconclusive in "
+        f"{pct(ec['medical']['claim_share']['inconclusive'])}% against {pct(ec['other']['claim_share']['inconclusive'])}%",
+        f"Toy verdicts accounted for {pct(ec['medical']['claim_share']['toy'])}% of medical claims and "
+        f"{pct(ec['other']['claim_share']['toy'])}% of other claims (difference {pts(ec['toy_claim_diff']['rd'])} "
+        f"percentage points, 95% CI {ci(ec['toy_claim_diff']['ci'])})",
+        f"the difference was {pts(a5['unadjusted']['rd'])} percentage points ({ci(a5['unadjusted']['ci'])})",
+        f"changed it to {est(a5['both'])}",
+        f"decreased from {pts(d['claim_level_unadjusted']['rd'])} to {pts(d['claim_level_within_team']['rd'])} "
+        f"percentage points (95% CI {ci(d['claim_level_within_team']['ci'])})",
+        f"on {pct(s1['mean'][0])}% of its other attempted papers, against {pct(s1['mean'][1])}% for teams first on "
+        f"other papers ({pts(s1['diff'])}, {ci(s1['ci'])})",
+        f"Among {more['G2']['papers']} papers attempted by at least two teams",
+        f"(difference {pts(more['G2']['rd'])} percentage points, 95% CI {ci(more['G2']['ci'])})",
+        f"decreased from {pts(ext['E1']['decided']['unadjusted']['rd'])} to {pts(ext['E1']['decided']['adjusted']['rd'])} "
+        f"percentage points (95% CI {ci(ext['E1']['decided']['adjusted']['ci'])})",
+        f"A difference in full verification remained ({pair(more['G1']['adj_strength'])})",
+        f"changed the decided difference to {pts(ph9b['rd'])} percentage points ({ci(ph9b['ci'])}; "
+        f"{ph9b['n']} frame papers)",
+        f"({ph9b['distribution']['life_science']['listed_and_linked']} medical and "
+        f"{ph9b['distribution']['other']['listed_and_linked']} other papers)",
+        f"coders classified {pct(k1['costly']['medical'])}% of medical claims and {pct(k1['costly']['other'])}% of "
+        f"other claims",
+        f"(difference {pts(k1['costly']['diff'])} percentage points, 95% CI {ci(k1['costly']['ci'])})",
+        f"and {pct(k1['analytic']['medical'])}% and {pct(k1['analytic']['other'])}% as checkable by analysis alone",
+        f"the full-verification difference was {pts(k3['unadjusted']['rd'])} percentage points, "
+        f"{est(k3['strength'])} after adjustment",
+        f"and {est(k3['strength_and_cost'])} after adjustment for both",
+        # Agreement
+        f"(kappa {a4['code_vs_code_used']['kappa']:.2f}; n = {a4['code_vs_code_used']['n']}; sensitivity "
+        f"{a4['code_vs_code_used']['sensitivity']:.2f}, specificity {a4['code_vs_code_used']['specificity']:.2f})",
+        f"(kappa {a4['main_data_access_vs_data_obtained']['kappa']:.2f}, n = {a4['main_data_access_vs_data_obtained']['n']})",
+        f"kappas were {ext9['pooled']['code_vs_code_used']['kappa']:.2f} (n = {ext9['pooled']['code_vs_code_used']['n']})",
+        f"(kappa {a4['neurips_checklist_item5_vs_code']['kappa']:.2f}, n = {a4['neurips_checklist_item5_vs_code']['n']})",
+        # Methods and recommendations
+        f"{p9['adjudicated']:,} disagreements",
+        f"This mapping was present in {sh('claims', 'life_science')}% of medical papers and {sh('claims', 'other')}% "
+        f"of other papers",
+        f"Access could not be coded from the text for {a3['main_data_access']['life_science']['unclear']} of "
+        f"{a3['main_data_access']['life_science']['n']:,} medical papers",
+        f"Weights were not reported in {a3['weights_release']['life_science']['unclear']:,} of "
+        f"{a3['weights_release']['life_science']['n']:,} medical papers",
+        f"The compute tier was not reported in {a3['compute_tier']['life_science']['distribution']['not_stated']:,} "
+        f"of {a3['compute_tier']['life_science']['n']:,} medical papers",
+        f"theorem ({sh('claims', 'life_science')}% versus {sh('claims', 'other')}%)",
     ]
     return [w for w in want if w not in TEXT]
 

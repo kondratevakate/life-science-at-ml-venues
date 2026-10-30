@@ -3,9 +3,9 @@
 Reproducibility practice in medical and life-science papers at top machine-learning venues, and what happens to
 them under agentic reproduction. Data, code, frozen protocol and manuscript for:
 
-> Kondrateva E, Kofler F, Simkó A. Reproducibility practice in medical and life-science papers at top
-> machine-learning venues and their agentic reproduction: a systematic meta-research study. Preprint in
-> preparation for medRxiv. An earlier version was submitted as the PSE9 abstract "Well documented, rarely picked".
+> Kondrateva E, Kofler F, Simkó A. Reported reproducibility practices and agentic reproduction outcomes in medical
+> and life-science papers at major ML conferences: a systematic meta-research study. Preprint in preparation for
+> medRxiv. An earlier version was submitted as the PSE9 abstract "Well documented, rarely picked".
 
 The frame is every paper labelled clinical or life science at CVPR 2025, ICCV 2025, ECCV 2026, ICLR 2025 and 2026,
 ICML 2025 and 2026 and NeurIPS 2025 and 2026 (2,170) plus an equal random sample of other papers; 3,278 full texts
