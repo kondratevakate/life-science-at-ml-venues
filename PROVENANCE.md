@@ -1,9 +1,14 @@
 # Provenance
 
 This repository started on 2026-10-30 as a byte-identical copy of the paths the study needs, taken with `git archive`
-from [kondratevakate/icml-2026-repro](https://github.com/kondratevakate/icml-2026-repro) at commit `acc3b15`
-(branch `codex/medical-reproducibility-map`). All 742 imported files have the same git blob ids as in the source
-commit. History before that point, including every protocol freeze, stays in the source repository.
+from [kondratevakate/icml-2026-repro](https://github.com/kondratevakate/icml-2026-repro), branch
+`codex/medical-reproducibility-map`, at commit `71eceb8`. All 742 imported files have the same git blob ids as in
+that commit. History before that point, including every protocol freeze, stays in the source repository.
+
+The import itself was taken from the local commit `acc3b15`, which the first commit here names. `acc3b15` adds
+only an unpublished blog-post draft on top of `71eceb8` and was never pushed; none of the imported paths differ
+between the two, so `71eceb8` is the public reference. Notes added after the import (from Note 9-22 on) live in this
+repository only.
 
 ## Protocol freezes (in icml-2026-repro, branch master)
 
@@ -23,7 +28,8 @@ To check:
 ```bash
 git clone https://github.com/kondratevakate/icml-2026-repro && cd icml-2026-repro
 git show --stat 839281e
-git diff 839281e acc3b15 -- verdict_audit/readiness/PROTOCOL.md   # only appended notes after the freeze
+git diff 839281e 71eceb8 -- verdict_audit/readiness/PROTOCOL.md   # only appended notes after the freeze
+git ls-tree -r 71eceb8 verdict_audit/readiness   # blob ids match this repository's first commit
 ```
 
 ## Data
