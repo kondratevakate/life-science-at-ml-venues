@@ -15,3 +15,9 @@ venv/
 
 # Harness/local state
 .claude/
+
+# LaTeX build outputs
+manuscript/latex/*.aux
+manuscript/latex/*.log
+manuscript/latex/*.out
+manuscript/latex/*.pdf
