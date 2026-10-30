@@ -1,0 +1,17 @@
+# Linked inputs (setup_data.py); downloaded data never enter git
+data/
+verdict_audit/readiness/data
+
+# Copyrighted paper text
+*.pdf
+!manuscript/*.pdf
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+
+# Harness/local state
+.claude/
