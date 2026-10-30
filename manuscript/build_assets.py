@@ -249,6 +249,10 @@ def checks(p9, areas, ext, claims, adv, ext9, more, emp) -> list[str]:
         f"kappas were {ext9['pooled']['code_vs_code_used']['kappa']:.2f} (n = {ext9['pooled']['code_vs_code_used']['n']})",
         f"(+7.5, {ci(ext['E5']['vision']['main_data_access']['ci'])})",
         f"{p9['adjudicated']:,} items",
+        f"(adjusted {est(load('p9_posthoc.json')['PH9_b'])[:-1].replace(' (', ' points, ', 1)}; {load('p9_posthoc.json')['PH9_b']['n']} frame papers)",
+        f"({load('p9_posthoc.json')['PH9_b']['distribution']['life_science']['listed_and_linked']} medical and {load('p9_posthoc.json')['PH9_b']['distribution']['other']['listed_and_linked']} other papers)",
+        f"only {pct(a3['claims']['life_science']['share'])}% of medical and {pct(a3['claims']['other']['share'])}% of other papers tie each main claim",
+        f"({pct(a3['claims']['life_science']['share'])}% of medical versus {pct(a3['claims']['other']['share'])}% of other papers)",
     ]
     return [w for w in want if w not in TEXT]
 
