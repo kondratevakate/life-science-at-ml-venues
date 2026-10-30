@@ -35,7 +35,7 @@ python setup_data.py --data-root <folder holding datasets/literature/...>
 cd verdict_audit/readiness
 python analyze_p9.py run && python analyze_p9_claims.py run && python analyze_p9_ext.py run
 python posthoc_p9.py && python posthoc_p9_adversarial.py && python posthoc_p9_areas.py
-python posthoc_p9_extended.py && python posthoc_p9_more.py && python posthoc_p9_uptake.py
+python posthoc_p9_extended.py && python posthoc_p9_more.py && python posthoc_p9_uptake.py && python posthoc_p9_empirical.py
 python build_p9_release.py
 python -m pytest test_p9.py test_readiness.py
 cd ../.. && python manuscript/build_assets.py && python manuscript/build_docx.py

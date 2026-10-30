@@ -2,10 +2,10 @@
  "table1": [
   [
    "Practice",
-   "Life science, % (n known)",
+   "Medical, % (n known)",
    "Other, % (n known)",
    "Pooled difference, points (95% CI)",
-   "Unclear, life science / other"
+   "Unclear, medical / other"
   ],
   [
    "Main claims listed and linked to evidence",
@@ -84,7 +84,7 @@
    "Medical minus other, points (95% CI)"
   ],
   [
-   "Decided, unadjusted (110 vs 1,821 attempted papers)",
+   "Decided, all attempted papers (110 vs 1,821), unadjusted",
    "−19.1 (−28.4 to −9.6)"
   ],
   [
@@ -104,24 +104,32 @@
    "−3.6 (−11.9 to +5.1)"
   ],
   [
+   "Fully verified, all attempted papers, unadjusted",
+   "−19.3 (−22.1 to −15.7)"
+  ],
+  [
+   "Fully verified, all attempted papers, adjusted for first-team strength",
+   "−11.7 (−14.7 to −8.0)"
+  ],
+  [
+   "Fully verified, claim-coded subsample (220 papers), unadjusted",
+   "−19.1 (−27.3 to −10.9)"
+  ],
+  [
+   "Fully verified, subsample, adjusted for first-team strength",
+   "−13.0 (−20.7 to −5.1)"
+  ],
+  [
+   "Fully verified, subsample, adjusted for strength and claim cost",
+   "−5.6 (−11.9 to +1.4)"
+  ],
+  [
    "Claim decided, unadjusted (claim level)",
    "−29.1 (−37.9 to −20.2)"
   ],
   [
    "Claim decided, within team (claim level)",
    "−3.6 (−7.8 to +0.8)"
-  ],
-  [
-   "Fully verified, unadjusted (claim-coded sample)",
-   "−19.1 (−27.3 to −10.9)"
-  ],
-  [
-   "Fully verified, adjusted for first-team strength",
-   "−13.0 (−20.7 to −5.1)"
-  ],
-  [
-   "Fully verified, adjusted for strength and claim cost",
-   "−5.6 (−11.9 to +1.4)"
   ]
  ],
  "table3": [
@@ -166,10 +174,54 @@
    ""
   ]
  ],
+ "table4": [
+  [
+   "Practice",
+   "Main analysis: known value",
+   "Empirical papers only: known value",
+   "All coded papers, unclear counted as none"
+  ],
+  [
+   "Code released",
+   "+13.1 (+9.6 to +16.6)",
+   "+10.6 (+6.0 to +15.0)",
+   ""
+  ],
+  [
+   "Main data openly available",
+   "+15.0 (+10.7 to +19.3)",
+   "+7.1 (+2.1 to +12.2)",
+   "46.2 vs 24.7%; +21.7 (+18.4 to +24.7)"
+  ],
+  [
+   "Weights released",
+   "+28.6 (+21.6 to +35.0)",
+   "+21.7 (+12.7 to +30.7)",
+   "8.7 vs 5.6%; +3.1 (+1.3 to +4.8)"
+  ],
+  [
+   "Variance reported",
+   "+24.4 (+20.7 to +27.9)",
+   "+24.7 (+20.1 to +29.3)",
+   ""
+  ],
+  [
+   "Synthetic or sample data released",
+   "+9.7 (+2.9 to +16.3)",
+   "",
+   "2.3 vs 2.9%; −0.6 (−1.7 to +0.5)"
+  ],
+  [
+   "Outputs released",
+   "+12.5 (+6.2 to +19.5)",
+   "",
+   "2.0 vs 2.2%; −0.2 (−1.2 to +0.8)"
+  ]
+ ],
  "table_s1": [
   [
    "Venue-year",
-   "Life science: frame / full text",
+   "Medical: frame / full text",
    "Other: frame / full text"
   ],
   [

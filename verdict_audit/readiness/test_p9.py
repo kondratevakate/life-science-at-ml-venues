@@ -91,3 +91,19 @@ def test_p9_release_table_is_publishable_and_matches_results():
             known = [r for r in rows if r["group"] == g and r[field] and r[field] != "unclear"]
             share = sum(r[field] == pos for r in known) / len(known)
             assert abs(share - res["A9_3"][field][g]["share"]) < 1e-12, (field, g)
+
+
+def test_note_9_22_results_match_the_release_table():
+    import csv
+    import json
+    import build_p9_release as R
+    rows = [r for r in csv.DictReader(R.OUT.open(encoding="utf-8")) if r["code"]]
+    res = json.loads((R.HERE / "results" / "p9_empirical.json").read_text(encoding="utf-8"))
+    emp = [r for r in rows if r["data_scale"] != "not_stated"]
+    assert res["E_a"]["units"] == {"medical": sum(r["group"] == "life_science" for r in emp),
+                                   "other": sum(r["group"] == "other" for r in emp)}
+    for field, pos in (("main_data_access", "open"), ("weights_release", "yes")):  # unclear counted as no
+        for g, key in (("life_science", "medical"), ("other", "other")):
+            sel = [r for r in rows if r["group"] == g]
+            share = sum(r[field] == pos for r in sel) / len(sel)
+            assert abs(share - res["E_b"][field]["share"][key]) < 1e-12, (field, g)

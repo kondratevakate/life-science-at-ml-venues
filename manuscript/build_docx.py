@@ -20,13 +20,16 @@ HERE = Path(__file__).resolve().parent
 OUT = HERE / "out"
 ROOT = HERE.parent
 TABLE_TITLES = {
-    "table1": "Table 1. Reproducibility practices stated in the full text, life-science versus other papers, nine "
+    "table1": "Table 1. Reproducibility practices stated in the full text, medical versus other papers, nine "
               "venue-years. Shares among papers with a known value; pooled difference is the Mantel-Haenszel risk "
               "difference over venue-years with a 95% paper bootstrap interval.",
     "table2": "Table 2. Reproduction outcomes of attempted ICML 2026 papers, medical minus other, unadjusted and "
               "adjusted (post hoc analyses, Notes 9-9 to 9-15).",
     "table3": "Table 3. Agreement of stated practices with what reproducers obtained (222 attempted ICML 2026 frame "
               "papers; pooled with the 300-paper extension sample in the last column).",
+    "table4": "Table 4. Sensitivity of the documentation differences (medical minus other, Mantel-Haenszel over "
+              "venue-years, points with 95% CI): main analysis, empirical papers only (a training-set size was "
+              "stated), and all coded papers with unstated releases counted as none (post hoc, Note 9-22).",
     "table_s1": "Supplementary Table S1. Papers in the frame and with a coded full text, by group and venue-year.",
 }
 INLINE = re.compile(r"(\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`|\^[^^]+\^)")
@@ -110,7 +113,7 @@ def render(md: Path, out: Path, tables: dict | None = None, figures: dict | None
         m = re.match(r"(#{1,3}) (.*)", line)
         if m:
             doc.add_heading(m.group(2), level=len(m.group(1)) if i else 0).runs[0].font.name = "Times New Roman"
-        elif tables is not None and line.strip().upper() in ("TABLE1", "TABLE2", "TABLE3"):
+        elif tables is not None and line.strip().upper() in ("TABLE1", "TABLE2", "TABLE3", "TABLE4"):
             key = line.strip().lower()
             add_table(doc, tables[key], TABLE_TITLES[key])
         elif re.match(r"\s*[*-] ", line):

@@ -861,3 +861,10 @@ estimates of E-a from `results/p9_papers.csv` before this note was written (code
   `no` excluded). Claim-level shares of verified, falsified, toy, inconclusive and other by group, with the
   difference in the toy share bootstrapped over papers within group (Note 9-10 procedure); paper-level share with
   at least one toy verdict, same bootstrap. Descriptive.
+* Result (identical under PYTHONHASHSEED 0 and 1). E-a, 1,129 medical and 962 other empirical papers: code +10.6
+  (CI +6.0 to +15.0), main data open +7.1 (+2.1 to +12.2), weights +21.7 (+12.7 to +30.7), variance +24.7 (+20.1 to
+  +29.3); the claim holds for all four fields. E-b, unclear as no: main data open 46.2% vs 24.7% (+21.7), weights
+  8.7% vs 5.6% (+3.1, +1.3 to +4.8), synthetic or sample data -0.6 (-1.7 to +0.5), outputs -0.2 (-1.2 to +0.8).
+  E-c, claim verdicts of medical vs other attempted papers: verified 21.7% vs 49.7%, falsified 3.6% vs 4.7%, toy
+  25.5% vs 20.9% (difference +4.7, -0.6 to +10.7), inconclusive 49.2% vs 24.8%; papers with any toy verdict 64.5% vs
+  71.3% (-6.8, -15.9 to +2.3).
