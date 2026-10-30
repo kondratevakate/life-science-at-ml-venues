@@ -5,6 +5,9 @@ verdict_audit/readiness/data
 # Copyrighted paper text
 *.pdf
 !manuscript/*.pdf
+# our own vector figures (needed by the LaTeX build)
+!manuscript/figures/*.pdf
+!manuscript/latex/figures/*.pdf
 
 # Python
 __pycache__/

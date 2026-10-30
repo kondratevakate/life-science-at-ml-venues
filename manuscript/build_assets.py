@@ -123,33 +123,59 @@ def table_s1(p9: dict) -> list[list[str]]:
     return rows
 
 
+def save(fig, name: str) -> None:
+    """PNG for Word, vector PDF for LaTeX; white background, no transparency."""
+    for ext in ("png", "pdf"):
+        fig.savefig(FIG / f"{name}.{ext}", dpi=300, bbox_inches="tight", facecolor="white", transparent=False)
+    plt.close(fig)
+
+
 def fig1(p9: dict) -> None:
+    """PRISMA-style flow: fixed box sizes, every arrow ends on a box edge."""
+    from matplotlib.patches import Rectangle
     coded = p9["coded"]
     frame = sum(v["frame"] for v in p9["coverage"].values())
-    boxes = [
-        (0.5, 0.92, f"Papers at nine venue-years, 2025-2026\nn = {SCREEN['listed']:,}"),
-        (0.5, 0.74, f"Candidates by topic or term screen\nn = {SCREEN['candidates']:,}"),
-        (0.5, 0.56, f"Labelled clinical ({SCREEN['clinical']:,}) or life science ({SCREEN['life_science']:,})\n"
-                    f"medical group n = {SCREEN['clinical'] + SCREEN['life_science']:,}"),
-        (0.5, 0.38, f"Frame: medical {frame // 2:,} + random other {frame // 2:,}\nn = {frame:,}"),
-        (0.5, 0.20, f"Full text retrieved and coded\nmedical {coded['life_science']:,}, other {coded['other']:,}"),
-    ]
-    side = [(0.86, 0.65, f"Excluded: labelled\nnot medical\nn = {SCREEN['excluded_no']:,}"),
-            (0.86, 0.29, f"Excluded: no full text\nn = {frame - coded['life_science'] - coded['other']:,}"),
-            (0.12, 0.74, f"Non-candidates\nn = {SCREEN['listed'] - SCREEN['candidates']:,}\n(random sample drawn\nper venue-year)")]
-    fig, ax = plt.subplots(figsize=(7.5, 7.5))
+    W, H, SW, X, XL, XR = 0.42, 0.105, 0.265, 0.52, 0.1425, 0.8675
+    Y = (0.92, 0.74, 0.56, 0.38, 0.20)
+    nl = "\n"
+    main = [f"Papers at nine venue-years{nl}2025-2026{nl}n = {SCREEN['listed']:,}",
+            f"Candidates by topic{nl}or term screen{nl}n = {SCREEN['candidates']:,}",
+            f"Labelled clinical ({SCREEN['clinical']:,}){nl}or life science ({SCREEN['life_science']:,}){nl}"
+            f"medical group, n = {SCREEN['clinical'] + SCREEN['life_science']:,}",
+            f"Frame, n = {frame:,}{nl}medical {frame // 2:,}{nl}random other {frame // 2:,}",
+            f"Full text retrieved and coded{nl}medical {coded['life_science']:,}{nl}other {coded['other']:,}"]
+    fig, ax = plt.subplots(figsize=(6.3, 6.0))
+    ax.set_xlim(-0.01, 1.01)
+    ax.set_ylim(0.12, 0.99)
     ax.axis("off")
-    for x, y, t in boxes + side:
-        ax.text(x, y, t, ha="center", va="center", fontsize=9, family="Arial",
-                bbox=dict(boxstyle="square,pad=0.6", fc="white", ec="black", lw=0.8))
-    for (x0, y0, _), (x1, y1, _) in zip(boxes, boxes[1:]):
-        ax.annotate("", xy=(x1, y1 + 0.06), xytext=(x0, y0 - 0.06), arrowprops=dict(arrowstyle="->", lw=0.8))
-    for (sx, sy, _), y in zip(side[:2], (0.65, 0.29)):
-        ax.annotate("", xy=(sx - 0.1, sy), xytext=(0.5, y), arrowprops=dict(arrowstyle="->", lw=0.8))
-    ax.annotate("", xy=(0.12, 0.38), xytext=(0.12, 0.65), arrowprops=dict(arrowstyle="-", lw=0.8))
-    ax.annotate("", xy=(0.26, 0.38), xytext=(0.12, 0.38), arrowprops=dict(arrowstyle="->", lw=0.8))
-    fig.savefig(FIG / "fig1.png", dpi=300, bbox_inches="tight")
-    plt.close(fig)
+    kw = dict(ha="center", va="center", fontsize=8, linespacing=1.3)
+    line = dict(color="black", lw=0.8)
+    arrow = dict(arrowstyle="-|>", color="black", lw=0.8, mutation_scale=9, shrinkA=0, shrinkB=0)
+
+    def box(x, y, w, text, h=H):
+        ax.add_patch(Rectangle((x - w / 2, y - h / 2), w, h, fc="white", ec="black", lw=0.8))
+        ax.text(x, y, text, **kw)
+
+    for y, t in zip(Y, main):
+        box(X, y, W, t)
+    for y0, y1 in zip(Y, Y[1:]):
+        ax.annotate("", xy=(X, y1 + H / 2), xytext=(X, y0 - H / 2), arrowprops=arrow)
+    # exclusions branch right from the midpoint of the arrow above them
+    for (y0, y1), text in (((Y[1], Y[2]), f"Excluded:{nl}labelled not medical{nl}n = {SCREEN['excluded_no']:,}"),
+                           ((Y[3], Y[4]), f"Excluded:{nl}no full text{nl}"
+                                          f"n = {frame - coded['life_science'] - coded['other']:,}")):
+        ym = (y0 + y1) / 2
+        box(XR, ym, SW, text, h=0.085)
+        ax.annotate("", xy=(XR - SW / 2, ym), xytext=(X, ym), arrowprops=arrow)
+    # non-candidates branch left from the first arrow and rejoin the frame from the left
+    yb, hl = (Y[0] + Y[1]) / 2, 0.13
+    box(XL, Y[1], SW, f"Non-candidates{nl}n = {SCREEN['listed'] - SCREEN['candidates']:,}{nl}"
+                      f"random sample{nl}drawn per venue-year", h=hl)
+    ax.plot([X, XL], [yb, yb], **line)
+    ax.annotate("", xy=(XL, Y[1] + hl / 2), xytext=(XL, yb), arrowprops=arrow)
+    ax.plot([XL, XL], [Y[1] - hl / 2, Y[3]], **line)
+    ax.annotate("", xy=(X - W / 2, Y[3]), xytext=(XL, Y[3]), arrowprops=arrow)
+    save(fig, "fig1")
 
 
 def forest_ax(ax, rows: list[tuple[str, dict]], xlabel: str, title: str | None = None) -> None:
@@ -158,9 +184,9 @@ def forest_ax(ax, rows: list[tuple[str, dict]], xlabel: str, title: str | None =
         ax.plot(100 * x["rd"], i, "s", color="black", ms=5)
     ax.axvline(0, color="grey", lw=0.8, ls="--")
     ax.set_ylim(-0.6, len(rows) - 0.4)
-    ax.set_yticks(range(len(rows)), [r[0] for r in reversed(rows)], fontsize=9)
-    ax.set_xlabel(xlabel, fontsize=9)
-    ax.tick_params(axis="x", labelsize=9)
+    ax.set_yticks(range(len(rows)), [r[0] for r in reversed(rows)], fontsize=8.5)
+    ax.set_xlabel(xlabel, fontsize=8.5)
+    ax.tick_params(axis="x", labelsize=8.5)
     if title:
         ax.set_title(title, fontsize=10, loc="left")
     for s in ("top", "right"):
@@ -176,11 +202,10 @@ def main() -> None:
                   table4=table4(p9, emp), table_s1=table_s1(p9))
     (HERE / "tables.json").write_text(json.dumps(tables, indent=1, ensure_ascii=False), encoding="utf-8")
     fig1(p9)
-    fig, ax = plt.subplots(figsize=(7.5, 0.42 * len(INDICATORS) + 1.0))
+    fig, ax = plt.subplots(figsize=(6.3, 0.36 * len(INDICATORS) + 0.9))
     forest_ax(ax, [(label, dict(rd=p9["A9_3"][f]["mh_rd"], ci=p9["A9_3"][f]["mh_ci"])) for f, label in INDICATORS],
               "Medical minus other, percentage points (Mantel-Haenszel, 95% CI)")
-    fig.savefig(FIG / "fig2.png", dpi=300, bbox_inches="tight")
-    plt.close(fig)
+    save(fig, "fig2")
     d = areas["PH9_d"]
     paper = [("Decided, unadjusted", d["unadjusted"]),
              ("Decided, clinical papers only", adv["F2"]["label_split"]["clinical"]),
@@ -192,13 +217,12 @@ def main() -> None:
              ("Fully verified, subsample, strength and claim cost", claims["K3"]["strength_and_cost"])]
     claim = [("Claim decided, unadjusted", d["claim_level_unadjusted"]),
              ("Claim decided, within team", d["claim_level_within_team"])]
-    fig, (a1, a2) = plt.subplots(2, 1, figsize=(7.5, 6.2), gridspec_kw=dict(height_ratios=[len(paper), len(claim) + 0.6]),
+    fig, (a1, a2) = plt.subplots(2, 1, figsize=(6.3, 5.4), gridspec_kw=dict(height_ratios=[len(paper), len(claim) + 0.6]),
                                  sharex=True)
     forest_ax(a1, paper, "", "(a) Paper level, attempted ICML 2026 papers")
     forest_ax(a2, claim, "Medical minus other, percentage points (95% CI)", "(b) Claim level")
     fig.tight_layout()
-    fig.savefig(FIG / "fig3.png", dpi=300, bbox_inches="tight")
-    plt.close(fig)
+    save(fig, "fig3")
     missing = checks(p9, areas, ext, claims, adv, ext9, more, emp)
     for m in missing:
         print("NOT IN TEXT:", m, file=sys.stderr)

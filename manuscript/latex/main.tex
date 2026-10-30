@@ -5,6 +5,7 @@
 \usepackage[a4paper,margin=2.5cm]{geometry}
 \usepackage{setspace}
 \usepackage{graphicx}
+\usepackage{array}
 \usepackage{tabularx}
 \usepackage{booktabs}
 \usepackage{xcolor}
@@ -13,6 +14,9 @@
 \usepackage{xurl}
 \DeclareUnicodeCharacter{2212}{\ensuremath{-}}
 \newcommand{\todo}[1]{\textcolor{red}{#1}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\renewcommand{\tabularxcolumn}[1]{>{\raggedright\arraybackslash}p{#1}}
+\setlength{\tabcolsep}{4pt}
 \onehalfspacing
 \linenumbers
 
@@ -55,6 +59,27 @@ Full texts were retrieved in a fixed order: arXiv HTML, then arXiv PDF (arXiv id
 \subsection*{Data items and coding}
 Each excerpt was coded on twelve fields (Table 1 lists the indicators): whether main claims were listed and linked to evidence; code (released, promised, no); main data access (open, credentialed or on request, private, synthetic only); an experiment on open data; release of synthetic or sample data, of weights and of outputs; variance (several seeds, error bars or intervals); environment (versions or container); compute (amount, hardware only, none); compute tier; and training-set scale. Every field allowed \texttt{unclear}. Coders used stated text only; a named dataset without stated access terms was \texttt{unclear}.
 
+\begin{table}[htbp]
+\centering\footnotesize
+\setcounter{table}{0}
+\caption{Reproducibility practices stated in the full text, medical versus other papers, nine venue-years. Shares among papers with a known value; pooled difference is the Mantel-Haenszel risk difference over venue-years with a 95\% paper bootstrap interval.}\label{tab:table1}
+\begin{tabularx}{\textwidth}{XL{1.75cm}L{1.75cm}L{3.55cm}L{1.75cm}}
+\toprule
+\textbf{Practice} & \textbf{Medical, \% (n known)} & \textbf{Other, \% (n known)} & \textbf{Pooled difference, points (95\% CI)} & \textbf{Unclear, medical / other} \\ \midrule
+Main claims listed and linked to evidence & 2.7 (1542) & 6.1 (1690) & −3.3 (−4.7 to −1.9) & 26 / 20 \\
+Code released & 59.4 (1471) & 46.2 (1618) & +13.1 (+9.6 to +16.6) & 97 / 92 \\
+Main data openly available & 83.7 (866) & 67.3 (627) & +15.0 (+10.7 to +19.3) & 702 / 1083 \\
+Experiment on open data & 91.2 (1009) & 76.6 (901) & +13.3 (+10.2 to +16.4) & 559 / 809 \\
+Synthetic or sample data released & 20.8 (173) & 11.1 (450) & +9.7 (+2.9 to +16.3) & 1395 / 1260 \\
+Weights released & 48.6 (280) & 19.4 (495) & +28.6 (+21.6 to +35.0) & 1288 / 1215 \\
+Outputs released & 19.7 (157) & 9.0 (422) & +12.5 (+6.2 to +19.5) & 1411 / 1288 \\
+Variance reported & 66.4 (1269) & 42.1 (1372) & +24.4 (+20.7 to +27.9) & 299 / 338 \\
+Environment stated & 16.9 (670) & 8.8 (880) & +8.5 (+5.1 to +11.8) & 898 / 830 \\
+Compute amount stated & 21.7 (1113) & 17.1 (1332) & +5.2 (+2.0 to +8.2) & 455 / 378 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
 Coding was done by language-model subagents (claude-sonnet-5-5), 20 papers per batch, with venue, year and group hidden. Coder 1 coded all papers and coder 2 a random 25\% (813 papers). The protocol set a gate of kappa 0.80 on each primary field (code, main data access, weights, variance, compute). Code (0.85), main data access (0.83) and weights (0.96) met the gate and use coder 1's codes. Variance (0.71) and compute (0.70) did not; as the protocol required, coder 2 then coded these two fields for all papers and every disagreement (1,404 items) was adjudicated by a blind adjudicator (claude-opus-5-5) who saw the two labels in random order and gave a reason.
 
 \subsection*{Reproduction outcomes}
@@ -74,22 +99,98 @@ The study used published papers and public challenge records. It involved no hum
 \subsection*{Study selection}
 Figure 1 shows the flow of papers. Of the 4,340 papers in the frame, full texts were retrieved for 3,278 (1,568 medical and 1,710 other papers); 1,057 could not be matched to a full text, 4 failed to download and 1 had no usable text. Retrieval was complete or nearly complete for ICML, CVPR and ICCV, which have open proceedings, and lowest for NeurIPS 2026 (165 of 431 medical and 212 of 431 other papers) and the other venue-years that relied on arXiv alone (Supplementary Table S1). It was lower for medical than for other papers (72.3\% against 78.8\%). Of the excerpts, 2,793 reached the 15,000-character cap.
 
+\begin{figure}[htbp]
+\centering
+\setcounter{figure}{0}
+\includegraphics[width=\textwidth]{figures/fig1.pdf}
+\caption{Flow of papers through the study. Counts per venue-year are in Supplementary Table S1.}\label{fig:1}
+\end{figure}
+
 \subsection*{Documentation practices}
-Table 1 gives every indicator. Among papers with a known value, medical papers stated nine of the ten practices more often than other papers. They released code in 59.4\% of papers with a known value against 46.2\% (pooled difference +13.1 points, 95\% CI +9.6 to +16.6), reported open main data in 83.7\% against 67.3\% (+15.0, +10.7 to +19.3), released weights in 48.6\% against 19.4\% (+28.6, +21.6 to +35.0) and reported variance in 66.4\% against 42.1\% (+24.4, +20.7 to +27.9). None of the three prespecified hypotheses was accepted: all three differences ran in the opposite direction. The exception was claims listed and each tied to a table, figure or theorem, which was rare in both groups (2.7\% against 6.1\%, −3.3 points, −4.7 to −1.9). Compute was rarely stated by either group (21.7\% and 17.1\% gave an amount), and most papers did not state their compute tier (1,349 of 1,568 medical papers).
+Table 1 and Figure 2 give every indicator. Among papers with a known value, medical papers stated nine of the ten practices more often than other papers. They released code in 59.4\% of papers with a known value against 46.2\% (pooled difference +13.1 points, 95\% CI +9.6 to +16.6), reported open main data in 83.7\% against 67.3\% (+15.0, +10.7 to +19.3), released weights in 48.6\% against 19.4\% (+28.6, +21.6 to +35.0) and reported variance in 66.4\% against 42.1\% (+24.4, +20.7 to +27.9). None of the three prespecified hypotheses was accepted: all three differences ran in the opposite direction. The exception was claims listed and each tied to a table, figure or theorem, which was rare in both groups (2.7\% against 6.1\%, −3.3 points, −4.7 to −1.9). Compute was rarely stated by either group (21.7\% and 17.1\% gave an amount), and most papers did not state their compute tier (1,349 of 1,568 medical papers).
+
+\begin{figure}[htbp]
+\centering
+\setcounter{figure}{1}
+\includegraphics[width=\textwidth]{figures/fig2.pdf}
+\caption{Medical minus other papers, Mantel-Haenszel risk difference over nine venue-years with 95\% bootstrap intervals, for each reproducibility practice stated in the full text (papers with a known value).}\label{fig:2}
+\end{figure}
 
 The four main differences survived every prespecified check (Note 9-12, F1): leaving out each venue-year in turn, using coder 1's or coder 2's codes alone, restricting to papers whose excerpt was not truncated, and stratifying by venue-year and excerpt length. They held for clinical and life-science papers separately and for vision venues (CVPR, ICCV, ECCV) and learning venues (ICLR, ICML, NeurIPS) separately, except open main data at vision venues (+7.5, −1.9 to +16.9).
 
 The comparison group contained more papers without an experiment on data: 43.7\% of other papers stated no training-set size, against 28.0\% of medical papers. Among the 1,129 medical and 962 other papers that stated one, the differences were smaller but all four held (Table 4): code +10.6 (+6.0 to +15.0), open main data +7.1 (+2.1 to +12.2), weights +21.7 (+12.7 to +30.7) and variance +24.7 (+20.1 to +29.3). Release fields were often not stated at all: a statement on weights could be coded for 280 of 1,568 medical papers. With unstated releases counted as none, medical papers still reported open main data more often (46.2\% against 24.7\%, +21.7, +18.4 to +24.7), but the weights difference fell to +3.1 points (+1.3 to +4.8), and the differences in synthetic or sample data (−0.6, −1.7 to +0.5) and outputs (−0.2, −1.2 to +0.8) disappeared.
+
+\begin{table}[htbp]
+\centering\footnotesize
+\setcounter{table}{3}
+\caption{Sensitivity of the documentation differences (medical minus other, Mantel-Haenszel over venue-years, points with 95\% CI): main analysis, empirical papers only, and all coded papers with unstated releases counted as none (post hoc, Note 9-22).}\label{tab:table4}
+\begin{tabularx}{\textwidth}{XL{3.55cm}L{3.55cm}L{3.9cm}}
+\toprule
+\textbf{Practice} & \textbf{Main analysis: known value} & \textbf{Empirical papers only: known value} & \textbf{All coded papers, unclear counted as none} \\ \midrule
+Code released & +13.1 (+9.6 to +16.6) & +10.6 (+6.0 to +15.0) &  \\
+Main data openly available & +15.0 (+10.7 to +19.3) & +7.1 (+2.1 to +12.2) & 46.2 vs 24.7\%; +21.7 (+18.4 to +24.7) \\
+Weights released & +28.6 (+21.6 to +35.0) & +21.7 (+12.7 to +30.7) & 8.7 vs 5.6\%; +3.1 (+1.3 to +4.8) \\
+Variance reported & +24.4 (+20.7 to +27.9) & +24.7 (+20.1 to +29.3) &  \\
+Synthetic or sample data released & +9.7 (+2.9 to +16.3) &  & 2.3 vs 2.9\%; −0.6 (−1.7 to +0.5) \\
+Outputs released & +12.5 (+6.2 to +19.5) &  & 2.0 vs 2.2\%; −0.2 (−1.2 to +0.8) \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 \subsection*{Reproduction outcomes in the ICML 2026 challenge}
 Medical papers were attempted about as often as other papers (110 of 328, 33.5\%, against 1,821 of 5,391, 33.8\%) but by fewer teams (mean 1.5 against 3.3 teams per attempted paper). Among attempted papers, 46.4\% of medical papers were decided against 65.5\% of other papers, a difference of −19.1 points (95\% CI −28.4 to −9.6; permutation p < 0.001). The gap was larger for clinical papers (−23.6, −36.2 to −10.9) than for life-science papers (−13.4, −27.5 to +0.9), and it remained when every logbook of the team with the most medical attempts was dropped (−19.1, −29.7 to −8.7). The same direction held for full verification (−19.3, −22.1 to −15.7) and for any falsified claim (−10.8, −16.9 to −4.1). Claims of medical papers were rated verified in 21.7\% against 49.7\% and inconclusive in 49.2\% against 24.8\%; toy verdicts were about as common (25.5\% against 20.9\%, +4.7, −0.6 to +10.7). In the prespecified analysis on the 222 attempted frame papers, the gap was −17.0 points (−29.7 to −4.4); adjusting for stated compute tier and data scale left it at −14.7 (−28.8 to −0.5), so scale did not account for it.
 
 Table 2 and Figure 3 show the post hoc decomposition. The judge did not treat medical claims differently: within the same team, claims of medical papers were decided 3.6 points less often than claims of other papers (−7.8 to +0.8), against 29.1 points less often without this adjustment. The first team to take up a medical paper had settled 40.0\% of its other attempted papers, against 60.3\% for teams first on other papers (−20.3, −26.0 to −14.3). Team strength behaved as a property of the team: on 903 papers attempted by at least two teams, the stronger team decided the same paper 32.3 points more often than the weaker one (+29.9 to +34.7). Adjusting for first-team strength reduced the decided gap from −19.1 to −3.6 points (−11.9 to +5.1), which meets the reading rule. It did not account for full verification: on all attempted papers that gap was −11.7 points (−14.7 to −8.0) after the adjustment. Whether a paper listed and linked its claims did not account for the decided gap either (adjusted −15.3 points, −28.5 to −2.2; 216 frame papers); few attempted papers in either group linked each claim to a result (3 medical and 9 other papers).
 
+\begin{table}[htbp]
+\centering\footnotesize
+\setcounter{table}{1}
+\caption{Reproduction outcomes of attempted ICML 2026 papers, medical minus other, unadjusted and adjusted (post hoc analyses, Notes 9-9 to 9-15).}\label{tab:table2}
+\begin{tabularx}{\textwidth}{XL{3.6cm}}
+\toprule
+\textbf{Outcome and adjustment} & \textbf{Medical minus other, points (95\% CI)} \\ \midrule
+Decided, all attempted papers (110 vs 1,821), unadjusted & −19.1 (−28.4 to −9.6) \\
+Decided, clinical papers only & −23.6 (−36.2 to −10.9) \\
+Decided, life-science papers only & −13.4 (−27.5 to +0.9) \\
+Decided, adjusted for number of teams & −9.2 (−18.1 to +0.4) \\
+Decided, adjusted for first-team strength & −3.6 (−11.9 to +5.1) \\
+Fully verified, all attempted papers, unadjusted & −19.3 (−22.1 to −15.7) \\
+Fully verified, all attempted papers, adjusted for first-team strength & −11.7 (−14.7 to −8.0) \\
+Fully verified, claim-coded subsample (220 papers), unadjusted & −19.1 (−27.3 to −10.9) \\
+Fully verified, subsample, adjusted for first-team strength & −13.0 (−20.7 to −5.1) \\
+Fully verified, subsample, adjusted for strength and claim cost & −5.6 (−11.9 to +1.4) \\
+Claim decided, unadjusted (claim level) & −29.1 (−37.9 to −20.2) \\
+Claim decided, within team (claim level) & −3.6 (−7.8 to +0.8) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\setcounter{figure}{2}
+\includegraphics[width=\textwidth]{figures/fig3.pdf}
+\caption{Attempted ICML 2026 papers, medical minus other, with 95\% bootstrap intervals. (a) Paper level: decided and fully verified, unadjusted and adjusted. (b) Claim level: share of claims decided, unadjusted and within team.}\label{fig:3}
+\end{figure}
+
 Claims of medical papers were also costlier to check: of 1,083 claims coded in the subsample of 220 papers, 56.7\% of medical against 39.1\% of other claims needed retraining or large-scale runs (+17.6, +9.7 to +25.8), and fewer could be settled by analysis alone (19.3\% against 45.3\%). In this subsample, the full-verification gap was −19.1 points, −13.0 (−20.7 to −5.1) after adjusting for first-team strength, and −5.6 (−11.9 to +1.4) after adjusting for both strength and claim cost.
 
 \subsection*{Stated practices against what reproducers obtained}
 On the 222 attempted frame papers, a stated code release agreed poorly with reproducers having run the authors' code (sensitivity 0.74, specificity 0.56, kappa 0.22; n = 162 with a known value on both sides), and stated open data agreed poorly with reproducers having obtained the data (kappa 0.13, n = 89). Weights agreed better (kappa 0.55, n = 43). Pooled with the 300 extension papers, the kappas were 0.28 (n = 347), 0.16 (n = 163) and 0.60 (n = 118). In NeurIPS papers, the checklist answer on open code agreed with the coded code release at kappa 0.22 (n = 152) (Table 3).
+
+\begin{table}[htbp]
+\centering\footnotesize
+\setcounter{table}{2}
+\caption{Agreement of stated practices with what reproducers obtained (222 attempted ICML 2026 frame papers; pooled with the 300-paper extension sample in the last column).}\label{tab:table3}
+\begin{tabularx}{\textwidth}{XL{0.7cm}L{1.6cm}L{1.6cm}L{1.0cm}L{2.4cm}}
+\toprule
+\textbf{Stated in full text vs obtained by reproducers} & \textbf{n} & \textbf{Sensitivity} & \textbf{Specificity} & \textbf{Kappa} & \textbf{Kappa pooled with extension (n)} \\ \midrule
+Code released vs authors' code run & 162 & 0.74 & 0.56 & 0.22 & 0.28 (347) \\
+Main data open vs data obtained & 89 & 0.87 & 0.27 & 0.13 & 0.16 (163) \\
+Weights released vs weights used & 43 & 0.75 & 0.92 & 0.55 & 0.60 (118) \\
+NeurIPS checklist item 5 vs code released & 152 & 0.80 & 0.53 & 0.22 &  \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 \section*{Discussion}
 \subsection*{Principal findings}
@@ -137,95 +238,4 @@ Medical papers at top ML venues are not less documented than other papers at the
 \bibitem{r12} Kapoor S, Cantrell EM, Peng K, Pham TH, Bail CA, Gundersen OE, et al. REFORMS: consensus-based recommendations for machine-learning-based science. Sci Adv. 2024;10(18):eadk3452. doi:10.1126/sciadv.adk3452
 \bibitem{r13} Collins GS, Moons KGM, Dhiman P, Riley RD, Beam AL, Van Calster B, et al. TRIPOD+AI statement: updated guidance for reporting clinical prediction models that use regression or machine learning methods. BMJ. 2024;385:e078378. doi:10.1136/bmj-2023-078378
 \end{thebibliography}
-\clearpage
-\begin{table}[p]
-\centering\footnotesize
-\caption{Reproducibility practices stated in the full text, medical versus other papers, nine venue-years. Shares among papers with a known value; pooled difference is the Mantel-Haenszel risk difference over venue-years with a 95\% paper bootstrap interval.}\label{tab:table1}
-\begin{tabularx}{\textwidth}{Xllll}
-\toprule
-\textbf{Practice} & \textbf{Medical, \% (n known)} & \textbf{Other, \% (n known)} & \textbf{Pooled difference, points (95\% CI)} & \textbf{Unclear, medical / other} \\ \midrule
-Main claims listed and linked to evidence & 2.7 (1542) & 6.1 (1690) & −3.3 (−4.7 to −1.9) & 26 / 20 \\
-Code released & 59.4 (1471) & 46.2 (1618) & +13.1 (+9.6 to +16.6) & 97 / 92 \\
-Main data openly available & 83.7 (866) & 67.3 (627) & +15.0 (+10.7 to +19.3) & 702 / 1083 \\
-Experiment on open data & 91.2 (1009) & 76.6 (901) & +13.3 (+10.2 to +16.4) & 559 / 809 \\
-Synthetic or sample data released & 20.8 (173) & 11.1 (450) & +9.7 (+2.9 to +16.3) & 1395 / 1260 \\
-Weights released & 48.6 (280) & 19.4 (495) & +28.6 (+21.6 to +35.0) & 1288 / 1215 \\
-Outputs released & 19.7 (157) & 9.0 (422) & +12.5 (+6.2 to +19.5) & 1411 / 1288 \\
-Variance reported & 66.4 (1269) & 42.1 (1372) & +24.4 (+20.7 to +27.9) & 299 / 338 \\
-Environment stated & 16.9 (670) & 8.8 (880) & +8.5 (+5.1 to +11.8) & 898 / 830 \\
-Compute amount stated & 21.7 (1113) & 17.1 (1332) & +5.2 (+2.0 to +8.2) & 455 / 378 \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-\begin{table}[p]
-\centering\footnotesize
-\caption{Reproduction outcomes of attempted ICML 2026 papers, medical minus other, unadjusted and adjusted (post hoc analyses, Notes 9-9 to 9-15).}\label{tab:table2}
-\begin{tabularx}{\textwidth}{Xl}
-\toprule
-\textbf{Outcome and adjustment} & \textbf{Medical minus other, points (95\% CI)} \\ \midrule
-Decided, all attempted papers (110 vs 1,821), unadjusted & −19.1 (−28.4 to −9.6) \\
-Decided, clinical papers only & −23.6 (−36.2 to −10.9) \\
-Decided, life-science papers only & −13.4 (−27.5 to +0.9) \\
-Decided, adjusted for number of teams & −9.2 (−18.1 to +0.4) \\
-Decided, adjusted for first-team strength & −3.6 (−11.9 to +5.1) \\
-Fully verified, all attempted papers, unadjusted & −19.3 (−22.1 to −15.7) \\
-Fully verified, all attempted papers, adjusted for first-team strength & −11.7 (−14.7 to −8.0) \\
-Fully verified, claim-coded subsample (220 papers), unadjusted & −19.1 (−27.3 to −10.9) \\
-Fully verified, subsample, adjusted for first-team strength & −13.0 (−20.7 to −5.1) \\
-Fully verified, subsample, adjusted for strength and claim cost & −5.6 (−11.9 to +1.4) \\
-Claim decided, unadjusted (claim level) & −29.1 (−37.9 to −20.2) \\
-Claim decided, within team (claim level) & −3.6 (−7.8 to +0.8) \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-\begin{table}[p]
-\centering\footnotesize
-\caption{Agreement of stated practices with what reproducers obtained (222 attempted ICML 2026 frame papers; pooled with the 300-paper extension sample in the last column).}\label{tab:table3}
-\begin{tabularx}{\textwidth}{Xlllll}
-\toprule
-\textbf{Stated in full text vs obtained by reproducers} & \textbf{n} & \textbf{Sensitivity} & \textbf{Specificity} & \textbf{Kappa} & \textbf{Kappa pooled with extension (n)} \\ \midrule
-Code released vs authors' code run & 162 & 0.74 & 0.56 & 0.22 & 0.28 (347) \\
-Main data open vs data obtained & 89 & 0.87 & 0.27 & 0.13 & 0.16 (163) \\
-Weights released vs weights used & 43 & 0.75 & 0.92 & 0.55 & 0.60 (118) \\
-NeurIPS checklist item 5 vs code released & 152 & 0.80 & 0.53 & 0.22 &  \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-\begin{table}[p]
-\centering\footnotesize
-\caption{Sensitivity of the documentation differences (medical minus other, Mantel-Haenszel over venue-years, points with 95\% CI): main analysis, empirical papers only, and all coded papers with unstated releases counted as none (post hoc, Note 9-22).}\label{tab:table4}
-\begin{tabularx}{\textwidth}{Xlll}
-\toprule
-\textbf{Practice} & \textbf{Main analysis: known value} & \textbf{Empirical papers only: known value} & \textbf{All coded papers, unclear counted as none} \\ \midrule
-Code released & +13.1 (+9.6 to +16.6) & +10.6 (+6.0 to +15.0) &  \\
-Main data openly available & +15.0 (+10.7 to +19.3) & +7.1 (+2.1 to +12.2) & 46.2 vs 24.7\%; +21.7 (+18.4 to +24.7) \\
-Weights released & +28.6 (+21.6 to +35.0) & +21.7 (+12.7 to +30.7) & 8.7 vs 5.6\%; +3.1 (+1.3 to +4.8) \\
-Variance reported & +24.4 (+20.7 to +27.9) & +24.7 (+20.1 to +29.3) &  \\
-Synthetic or sample data released & +9.7 (+2.9 to +16.3) &  & 2.3 vs 2.9\%; −0.6 (−1.7 to +0.5) \\
-Outputs released & +12.5 (+6.2 to +19.5) &  & 2.0 vs 2.2\%; −0.2 (−1.2 to +0.8) \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-\begin{figure}[p]
-\centering
-\includegraphics[width=\textwidth]{figures/fig1.png}
-\caption{Flow of papers through the study. Counts per venue-year are in Supplementary Table S1.}\label{fig:1}
-\end{figure}
-
-\begin{figure}[p]
-\centering
-\includegraphics[width=\textwidth]{figures/fig2.png}
-\caption{Medical minus other papers, Mantel-Haenszel risk difference over nine venue-years with 95\% bootstrap intervals, for each reproducibility practice stated in the full text (papers with a known value).}\label{fig:2}
-\end{figure}
-
-\begin{figure}[p]
-\centering
-\includegraphics[width=\textwidth]{figures/fig3.png}
-\caption{Attempted ICML 2026 papers, medical minus other, with 95\% bootstrap intervals. (a) Paper level: decided and fully verified, unadjusted and adjusted. (b) Claim level: share of claims decided, unadjusted and within team.}\label{fig:3}
-\end{figure}
-
 \end{document}
