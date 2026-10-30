@@ -1,4 +1,4 @@
-# Well documented, rarely picked: a systematic meta-research study of reproducibility practice in medical and life-science papers at top machine-learning venues and their agentic reproduction
+# Reproducibility practice in medical and life-science papers at top machine-learning venues and their agentic reproduction: a systematic meta-research study
 
 Ekaterina Kondrateva^1,2^, Florian Kofler^1,3,4,5^, Attila Simkó^6^
 
