@@ -841,3 +841,23 @@ PSE9 abstracts. Script `posthoc_p9_biosec.py`, output `results/p9_biosec.json`.
   direct hits and 25 random hits read as on-topic; misses include drug-target affinity and synthesis-library titles.
 * Result: 523 of 2,170 (24%) hit any topic; 22 (about 1%) are direct (NeurIPS 10, ICML 8, ICLR 4; none at CVPR,
   ICCV, ECCV).
+
+## Note 9-22 (2026-10-30, post hoc, after an internal review of the manuscript; frozen before the intervals below)
+
+An internal review of the medRxiv manuscript raised three points that the existing results do not answer. Post hoc;
+reported as such. Script `posthoc_p9_empirical.py`, output `results/p9_empirical.json`; MH and bootstrap exactly as
+in A9.3 (`analyze_p9.mh_rd`, `boot_ci`, 2,000 resamples, seed 20261017). Disclosure: the reviewer computed the point
+estimates of E-a from `results/p9_papers.csv` before this note was written (code +10.6, main data open +7.1, weights
++21.7, variance +24.7 points); no interval and nothing in E-b or E-c had been computed.
+
+* E-a, empirical papers only. Units: coded frame papers whose data_scale is not `not_stated` (a training-set size
+  was stated, so the paper reports an experiment on data). Fields code, main_data_access, weights_release,
+  variance, indicators as in Note 9-5, `unclear` excluded. Reading rule: "medical papers document more" holds for a
+  field among empirical papers if the CI lower bound is above 0.
+* E-b, release fields with `unclear` counted as not released or not open: main_data_access, weights_release,
+  synthetic_or_sample_release, outputs_release over all coded papers. Descriptive; shares by group and MH
+  difference with CI.
+* E-c, verdict mix: attempted ICML 2026 papers as in Note 9-10 (author's namespace excluded, candidates labelled
+  `no` excluded). Claim-level shares of verified, falsified, toy, inconclusive and other by group, with the
+  difference in the toy share bootstrapped over papers within group (Note 9-10 procedure); paper-level share with
+  at least one toy verdict, same bootstrap. Descriptive.
