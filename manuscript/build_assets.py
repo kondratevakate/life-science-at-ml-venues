@@ -441,7 +441,7 @@ def checks(p9, areas, ext, claims, adv, ext9, more, emp) -> list[str]:
         f"{a3['weights_release']['life_science']['n']:,} medical papers",
         f"The compute tier was not reported in {a3['compute_tier']['life_science']['distribution']['not_stated']:,} "
         f"of {a3['compute_tier']['life_science']['n']:,} medical papers",
-        f"theorem ({sh('claims', 'life_science')}% versus {sh('claims', 'other')}%)",
+        f"specific result ({sh('claims', 'life_science')}% versus {sh('claims', 'other')}%)",
     ]
     return [w for w in want if w not in TEXT]
 
