@@ -10,6 +10,10 @@ only an unpublished blog-post draft on top of `71eceb8` and was never pushed; no
 between the two, so `71eceb8` is the public reference. Notes added after the import (from Note 9-22 on) live in this
 repository only.
 
+On 2026-10-30 two of the imported files were removed because they list participants' public account names and no
+Protocol 9 analysis reads them: `audit/public_repro_audit.csv` and `verdict_audit/e1_adjusted/keys/e1_evidence_key.csv`
+(see README). They remain in the first commit of this repository and in `71eceb8` of the source repository.
+
 ## Protocol freezes (in icml-2026-repro, branch master)
 
 | Commit | Date (UTC+4) | What |

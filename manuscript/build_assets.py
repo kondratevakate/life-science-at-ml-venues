@@ -402,7 +402,7 @@ def checks(p9, areas, ext, claims, adv, ext9, more, emp) -> list[str]:
         f"{p9['adjudicated']:,} items",
         f"(adjusted {est(load('p9_posthoc.json')['PH9_b'])[:-1].replace(' (', ' points, ', 1)}; {load('p9_posthoc.json')['PH9_b']['n']} frame papers)",
         f"({load('p9_posthoc.json')['PH9_b']['distribution']['life_science']['listed_and_linked']} medical and {load('p9_posthoc.json')['PH9_b']['distribution']['other']['listed_and_linked']} other papers)",
-        f"({pct(a3['claims']['life_science']['share'])}% of medical versus {pct(a3['claims']['other']['share'])}% of other papers)",
+        f"theorem ({pct(a3['claims']['life_science']['share'])}% versus {pct(a3['claims']['other']['share'])}%)",
         f"Only {pct(a3['claims']['life_science']['share'])}% of medical and {pct(a3['claims']['other']['share'])}% of other papers did so",
         f"Access could not be coded from the text for {a3['main_data_access']['life_science']['unclear']} of {a3['main_data_access']['life_science']['n']:,} medical papers",
         f"Weights were unstated in {a3['weights_release']['life_science']['unclear']:,} of {a3['weights_release']['life_science']['n']:,} medical papers",

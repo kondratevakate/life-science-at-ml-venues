@@ -27,6 +27,19 @@ is built to be rerun on later venue-years with the same frame procedure and code
 `verdict_audit/e1_adjusted/` and `verdict_audit/falsifiability/` hold earlier protocols (4 and 6) of the same
 project. They are here only because the analysis code imports from them.
 
+Two intermediate files of those earlier protocols list the public account names of challenge participants and are
+not included here: `audit/public_repro_audit.csv` and `verdict_audit/e1_adjusted/keys/e1_evidence_key.csv`. No
+Protocol 9 analysis reads them. Rerunning Protocols 6 and 7 (`verdict_audit/analyze.py`, `analyze_readiness.py`,
+the `e1_adjusted` and `falsifiability` scripts) or `tools/check_map_against_labels.py` needs them; they are in
+[kondratevakate/icml-2026-repro](https://github.com/kondratevakate/icml-2026-repro) at the commit named in
+[`PROVENANCE.md`](PROVENANCE.md).
+
+`posthoc_p9_uptake.py` (Note 9-11) also reads the challenge's `claims_anchored.json` from the repository root. The
+committed `results/p9_uptake.json` was computed from the copy downloaded on 2026-07-18, which is not in the shared
+data registry. With the registered 2026-10-27 copy (`icml2026-challenge-snapshots/2026-10-27/raw/verdicts/`), which
+lists one more paper, the script reproduces every value except one descriptive mean (anchored claims per other
+paper, 4.6947 vs 4.6974); no number in the manuscript depends on it.
+
 ## Reproduce
 
 ```bash
