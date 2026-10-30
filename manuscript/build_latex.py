@@ -48,19 +48,9 @@ PREAMBLE = r"""\documentclass[11pt]{article}
 COLS = {"table1": "L{1.75cm}L{1.75cm}L{3.55cm}L{1.75cm}",
         "table2": "L{3.6cm}",
         "table3": "L{0.7cm}L{1.6cm}L{1.6cm}L{1.0cm}L{2.4cm}",
-        "table4": "L{3.55cm}L{3.55cm}L{3.9cm}"}
-TABLE_TITLES = {
-    "table1": "Reproducibility practices stated in the full text, medical versus other papers, nine venue-years. "
-              "Shares among papers with a known value; pooled difference is the Mantel-Haenszel risk difference over "
-              "venue-years with a 95\\% paper bootstrap interval.",
-    "table2": "Reproduction outcomes of attempted ICML 2026 papers, medical minus other, unadjusted and adjusted "
-              "(post hoc analyses, Notes 9-9 to 9-15).",
-    "table3": "Agreement of stated practices with what reproducers obtained (222 attempted ICML 2026 frame papers; "
-              "pooled with the 300-paper extension sample in the last column).",
-    "table4": "Sensitivity of the documentation differences (medical minus other, Mantel-Haenszel over venue-years, "
-              "points with 95\\% CI): main analysis, empirical papers only, and all coded papers with unstated "
-              "releases counted as none (post hoc, Note 9-22).",
-}
+        "table4": "L{3.55cm}L{3.55cm}L{3.9cm}",
+        "tablea1": "L{4.2cm}L{4.2cm}"}
+NUMBER = {"table1": "1", "table2": "2", "table3": "3", "table4": "4", "tablea1": "A1"}  # captions: tables.json
 
 
 def esc(s: str) -> str:
@@ -95,13 +85,13 @@ def inline(text: str) -> str:
     return "".join(out).replace(" ~\\cite", "~\\cite")
 
 
-def table(key: str, rows: list[list[str]]) -> str:
+def table(key: str, rows: list[list[str]], caption: str) -> str:
     head = " & ".join(r"\textbf{" + esc(c) + "}" for c in rows[0]) + r" \\ \midrule"
     body = [" & ".join(esc(c) for c in r) + r" \\" for r in rows[1:]]
     # Floats are placed where first cited, so LaTeX's own counter would number them by position; fix it.
     return "\n".join([r"\begin{table}[htbp]", r"\centering\footnotesize",
-                      r"\setcounter{table}{" + str(int(key[-1]) - 1) + "}",
-                      r"\caption{" + TABLE_TITLES[key] + r"}\label{tab:" + key + "}",
+                      r"\renewcommand{\thetable}{" + NUMBER[key] + "}",
+                      r"\caption{" + esc(caption) + r"}\label{tab:" + key + "}",
                       r"\begin{tabularx}{\textwidth}{X" + COLS[key] + "}", r"\toprule", head, *body,
                       r"\bottomrule", r"\end{tabularx}", r"\end{table}", ""])
 
@@ -117,9 +107,20 @@ def main() -> None:
     tables = json.loads((HERE / "tables.json").read_text(encoding="utf-8"))
     legends = {m.group(1): inline(m.group(2)) for m in
                (re.match(r"\*\*Figure (\d)\.\*\* (.*)", ln) for ln in lines) if m}
-    floats = {("Table", k[-1]): table(k, tables[k]) for k in TABLE_TITLES}
+    caps = tables["captions"]
+    floats = {("Table", NUMBER[k]): table(k, tables[k], caps[k]) for k in NUMBER if k != "tablea1"}
     floats.update({("Figure", n): figure(n, c) for n, c in legends.items()})
     placed: set = set()
+    items: list[str] = []
+
+    def flush_items() -> None:
+        if items:
+            doc.append("\\begin{itemize}\n" + "\n".join("\\item " + t for t in items) + "\n\\end{itemize}\n")
+            items.clear()
+
+    def bibliography() -> list[str]:
+        return ["\\begin{thebibliography}{99}", *[f"\\bibitem{{r{n}}} {t}" for n, t in refs],
+                "\\end{thebibliography}"]
 
     title = lines[0].lstrip("# ").strip()
     head, i = [], 1
@@ -130,11 +131,18 @@ def main() -> None:
     doc = [PREAMBLE, "\\title{" + esc(title) + "}", "\\author{" + head[0] + "}", "\\date{}",
            "\\begin{document}", "\\maketitle", "\\begin{flushleft}\\small", r" \\ ".join(head[1:]),
            "\\end{flushleft}"]
-    section, refs = None, []
+    section, refs, bib_done = None, [], False
     for line in lines[i:]:
+        if not re.match(r"\s*[*-] ", line):
+            flush_items()
         m = re.match(r"(#{2,3}) (.*)", line)
         if m:
             section = m.group(2)
+            if section.startswith("Appendix") and not bib_done:
+                doc += [floats[k] for k in sorted(floats) if k not in placed]  # anything never cited
+                placed.update(floats)
+                doc += ["\\clearpage"] + bibliography()
+                bib_done = True
             if section not in ("References", "Tables", "Figure legends"):
                 doc.append(("\\section*{" if len(m.group(1)) == 2 else "\\subsection*{") + esc(section) + "}")
             continue
@@ -144,14 +152,21 @@ def main() -> None:
             rm = re.match(r"(\d+)\. (.*)", line)
             refs.append((rm.group(1), inline(rm.group(2))))
             continue
+        if line.strip().lower() == "tablea1":
+            doc.append(table("tablea1", tables["tablea1"], caps["tablea1"]))
+            continue
+        if re.match(r"\s*[*-] ", line):
+            items.append(inline(re.sub(r"^\s*[*-] ", "", line)))
+            continue
         doc.append(inline(line) + "\n")
         for kind, n in CITED.findall(line):
             if (kind, n) in floats and (kind, n) not in placed:
                 doc.append(floats[(kind, n)])
                 placed.add((kind, n))
-    doc += [floats[k] for k in sorted(floats) if k not in placed]  # anything never cited still appears
-    doc += ["\\begin{thebibliography}{99}", *[f"\\bibitem{{r{n}}} {t}" for n, t in refs],
-            "\\end{thebibliography}", "\\end{document}"]
+    flush_items()
+    if not bib_done:
+        doc += [floats[k] for k in sorted(floats) if k not in placed] + bibliography()
+    doc += ["\\end{document}"]
 
     TEX.mkdir(exist_ok=True)
     figdir = TEX / "figures"

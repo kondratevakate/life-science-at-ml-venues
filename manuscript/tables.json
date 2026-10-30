@@ -218,7 +218,7 @@
    "2.0 vs 2.2%; −0.2 (−1.2 to +0.8)"
   ]
  ],
- "table_s1": [
+ "tablea1": [
   [
    "Venue-year",
    "Medical: frame / full text",
@@ -274,5 +274,12 @@
    "2170 / 1568",
    "2170 / 1710"
   ]
- ]
+ ],
+ "captions": {
+  "table1": "Medical papers state most reproducibility practices more often than other papers; only linking claims to results is rarer. Practices stated in the full text, medical versus other papers, nine venue-years. Shares among papers with a known value; pooled difference is the Mantel-Haenszel risk difference over venue-years with a 95% paper bootstrap interval.",
+  "table2": "The gap in being decided disappears after adjusting for the strength of the first team; the gap in full verification needs claim cost as well. Reproduction outcomes of attempted ICML 2026 papers, medical minus other, unadjusted and adjusted (post hoc analyses, Notes 9-9 to 9-15).",
+  "table3": "What papers state agrees poorly with what reproducers obtained, except for weights. Agreement on the 222 attempted ICML 2026 frame papers; the last column pools them with the 300-paper extension sample.",
+  "table4": "The documentation differences hold among empirical papers; with unstated releases counted as none, only the open-data difference stays large. Medical minus other, Mantel-Haenszel over venue-years, points with 95% CI (post hoc, Note 9-22).",
+  "tablea1": "Full texts were nearly complete where open proceedings exist and missing most often at NeurIPS 2026. Papers in the frame and with a coded full text, by group and venue-year."
+ }
 }

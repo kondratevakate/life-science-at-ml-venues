@@ -31,6 +31,117 @@ INDICATORS = (("claims", "Main claims listed and linked to evidence"), ("code", 
 LABEL = dict(INDICATORS)
 # Candidate screening counts for the nine venue-years (results/candidates_summary.json and codes/labels.csv).
 SCREEN = dict(listed=40290, candidates=5530, clinical=1013, life_science=1157, excluded_no=3360)
+# Two-group palette from the dataviz reference (categorical slots 2 and 1), validated light-mode: medical is
+# orange, other papers blue; text and neutral marks stay in ink colours, never the series colour.
+MED, OTH, INK, INK2, GRID = "#eb6834", "#2a78d6", "#0b0b0b", "#52514e", "#c9c8c3"
+plt.rcParams.update({"font.size": 8, "axes.edgecolor": INK2, "axes.labelcolor": INK, "xtick.color": INK2,
+                     "ytick.color": INK, "axes.titleweight": "bold"})
+
+
+def dumbbell(ax, rows: list[tuple[str, float, float, str]], title: str) -> None:
+    """One row per measure: medical (orange) and other (blue) shares joined by a line, the difference on the right."""
+    for i, (label, med, oth, note) in enumerate(reversed(rows)):
+        ax.plot([100 * oth, 100 * med], [i, i], color=GRID, lw=3, solid_capstyle="round", zorder=1)
+        ax.scatter([100 * oth], [i], s=46, color=OTH, edgecolor="white", linewidth=1.2, zorder=3)
+        ax.scatter([100 * med], [i], s=46, color=MED, edgecolor="white", linewidth=1.2, zorder=3)
+        ax.text(103, i, note, va="center", fontsize=7.5, color=INK2)
+    ax.set_yticks(range(len(rows)), [r[0] for r in reversed(rows)])
+    ax.set_xlim(0, 100)
+    ax.set_ylim(-0.6, len(rows) - 0.4)
+    ax.set_xlabel("% of papers (claims where marked)")
+    ax.xaxis.grid(True, color=GRID, lw=0.5)
+    ax.set_axisbelow(True)
+    ax.set_title(title, loc="left", fontsize=9)
+    for s in ("top", "right", "left"):
+        ax.spines[s].set_visible(False)
+    ax.tick_params(axis="y", length=0)
+
+
+def summary(p9, areas, ext, claims, more, emp) -> None:
+    """Figure 1: the paper in one picture, four panels that read left to right, top to bottom."""
+    a3, d, ec = p9["A9_3"], areas["PH9_d"], emp["E_c"]
+    sh = lambda f, g: a3[f][g]["share"]
+    rd = lambda f: f"{pts(a3[f]['mh_rd'])} pts"
+    others = [v for k, v in areas["PH9_c"].items() if k != "medical"]
+    oth_decided = sum(v["decided"] * v["attempted"] for v in others) / sum(v["attempted"] for v in others)
+    fig = plt.figure(figsize=(7.4, 6.6))
+    gs = fig.add_gridspec(2, 2, width_ratios=[1.25, 1], hspace=0.55, wspace=0.95)
+    a = fig.add_subplot(gs[0, 0])
+    dumbbell(a, [("Code released", sh("code", "life_science"), sh("code", "other"), rd("code")),
+                 ("Main data open", sh("main_data_access", "life_science"), sh("main_data_access", "other"),
+                  rd("main_data_access")),
+                 ("Variance reported", sh("variance", "life_science"), sh("variance", "other"), rd("variance")),
+                 ("Claims tied to a result", sh("claims", "life_science"), sh("claims", "other"), rd("claims"))],
+             "(a) On paper: medical papers state more")
+    b = fig.add_subplot(gs[0, 1])
+    dumbbell(b, [("Paper decided", areas["PH9_c"]["medical"]["decided"], oth_decided,
+                  f"{pts(d['unadjusted']['rd'])} pts"),
+                 ("Claims verified", ec["medical"]["claim_share"]["verified"], ec["other"]["claim_share"]["verified"],
+                  ""),
+                 ("Claims inconclusive", ec["medical"]["claim_share"]["inconclusive"],
+                  ec["other"]["claim_share"]["inconclusive"], "")],
+             "(b) In practice: settled less often")
+    b.set_xlabel("% of attempted ICML 2026 papers or claims")
+    c = fig.add_subplot(gs[1, 0])
+    steps = [("Decided, as observed", d["unadjusted"]),
+             ("> same team, claim level", d["claim_level_within_team"]),
+             ("> after first-team strength", ext["E1"]["decided"]["adjusted"]),
+             ("Fully verified, as observed", ext["E4"]["fully_verified"]["unadjusted"]),
+             ("> after first-team strength", more["G1"]["adj_strength"]),
+             ("> + claim cost (220 papers)", claims["K3"]["strength_and_cost"])]
+    for i, (label, x) in enumerate(reversed(steps)):
+        clear = x["ci"][0] > 0 or x["ci"][1] < 0
+        c.plot([100 * x["ci"][0], 100 * x["ci"][1]], [i, i], color=MED, lw=1.8, alpha=0.45, solid_capstyle="round")
+        c.scatter([100 * x["rd"]], [i], s=40, color=MED if clear else "white", edgecolor=MED, linewidth=1.4, zorder=3)
+        c.text(14, i, f"{pts(x['rd'])}", va="center", fontsize=7.5, color=INK2)
+    c.axvline(0, color=INK2, lw=0.8)
+    c.set_yticks(range(len(steps)), [s[0] for s in reversed(steps)])
+    c.set_xlim(-32, 22)
+    c.set_ylim(-0.6, len(steps) - 0.4)
+    c.set_xlabel("Gap, medical minus other, points (95% CI)")
+    c.set_title("(c) Why: the gap follows who takes the paper", loc="left", fontsize=9)
+    for s in ("top", "right", "left"):
+        c.spines[s].set_visible(False)
+    c.tick_params(axis="y", length=0)
+    e = fig.add_subplot(gs[1, 1])
+    a4 = p9["A9_4"]
+    kap = [("Code link vs code run", a4["code_vs_code_used"]["kappa"]),
+           ("Open data vs data obtained", a4["main_data_access_vs_data_obtained"]["kappa"]),
+           ("Weights vs weights used", a4["weights_release_vs_weights_used"]["kappa"])]
+    for i, (label, k) in enumerate(reversed(kap)):
+        e.barh(i, k, height=0.5, color=INK2)
+        e.text(k + 0.02, i, f"{k:.2f}", va="center", fontsize=7.5, color=INK)
+    e.axvline(0.40, color=GRID, lw=0.8, ls=(0, (3, 2)))
+    e.text(0.42, len(kap) - 0.62, "kappa 0.40", fontsize=7, color=INK2)
+    e.set_yticks(range(len(kap)), [k[0] for k in reversed(kap)])
+    e.set_xlim(0, 1)
+    e.set_xlabel("Cohen's kappa, stated vs obtained")
+    e.set_title("(d) Stated is not obtained", loc="left", fontsize=9)
+    for s in ("top", "right", "left"):
+        e.spines[s].set_visible(False)
+    e.tick_params(axis="y", length=0)
+    handles = [plt.Line2D([], [], marker="o", ls="", color=MED, ms=7, label="Medical papers"),
+               plt.Line2D([], [], marker="o", ls="", color=OTH, ms=7, label="Other papers")]
+    fig.legend(handles=handles, loc="upper center", ncol=2, frameon=False, bbox_to_anchor=(0.5, 1.01), fontsize=8)
+    save(fig, "fig1")
+
+# Table captions: first sentence is what the reader should see, then what the table is. Read by both builders.
+CAPTIONS = {
+    "table1": "Medical papers state most reproducibility practices more often than other papers; only linking claims to "
+              "results is rarer. Practices stated in the full text, medical versus other papers, nine venue-years. "
+              "Shares among papers with a known value; pooled difference is the Mantel-Haenszel risk difference over "
+              "venue-years with a 95% paper bootstrap interval.",
+    "table2": "The gap in being decided disappears after adjusting for the strength of the first team; the gap in full "
+              "verification needs claim cost as well. Reproduction outcomes of attempted ICML 2026 papers, medical "
+              "minus other, unadjusted and adjusted (post hoc analyses, Notes 9-9 to 9-15).",
+    "table3": "What papers state agrees poorly with what reproducers obtained, except for weights. Agreement on the 222 "
+              "attempted ICML 2026 frame papers; the last column pools them with the 300-paper extension sample.",
+    "table4": "The documentation differences hold among empirical papers; with unstated releases counted as none, only "
+              "the open-data difference stays large. Medical minus other, Mantel-Haenszel over venue-years, points "
+              "with 95% CI (post hoc, Note 9-22).",
+    "tablea1": "Full texts were nearly complete where open proceedings exist and missing most often at NeurIPS 2026. "
+               "Papers in the frame and with a coded full text, by group and venue-year.",
+}
 
 
 def load(name: str) -> dict:
@@ -152,20 +263,30 @@ def fig1(p9: dict) -> None:
     line = dict(color="black", lw=0.8)
     arrow = dict(arrowstyle="-|>", color="black", lw=0.8, mutation_scale=9, shrinkA=0, shrinkB=0)
 
-    def box(x, y, w, text, h=H):
+    def box(x, y, w, text, h=H, fs=8):
         ax.add_patch(Rectangle((x - w / 2, y - h / 2), w, h, fc="white", ec="black", lw=0.8))
-        ax.text(x, y, text, **kw)
+        ax.text(x, y, text, **{**kw, "fontsize": fs})
 
     for y, t in zip(Y, main):
         box(X, y, W, t)
     for y0, y1 in zip(Y, Y[1:]):
         ax.annotate("", xy=(X, y1 + H / 2), xytext=(X, y0 - H / 2), arrowprops=arrow)
-    # exclusions branch right from the midpoint of the arrow above them
-    for (y0, y1), text in (((Y[1], Y[2]), f"Excluded:{nl}labelled not medical{nl}n = {SCREEN['excluded_no']:,}"),
-                           ((Y[3], Y[4]), f"Excluded:{nl}no full text{nl}"
-                                          f"n = {frame - coded['life_science'] - coded['other']:,}")):
+    # exclusions branch right from the midpoint of the arrow above them; reasons from the release table
+    import csv
+    from collections import Counter
+    with (RES / "p9_papers.csv").open(encoding="utf-8") as fh:
+        ft = Counter((r["group"], r["fulltext_status"]) for r in csv.DictReader(fh) if r["fulltext_status"] != "ok")
+    why = Counter(s for _, s in ft.elements())
+    lost = {g: sum(n for (gg, _), n in ft.items() if gg == g) for g in ("life_science", "other")}
+    nofull = (f"Excluded: no full text{nl}n = {sum(why.values()):,}{nl}medical {lost['life_science']:,}, "
+              f"other {lost['other']:,}{nl}no arXiv match and no{nl}open proceedings: {why['no_match']:,}{nl}"
+              f"download failed: {why['error']}{nl}no usable text: {why['no_fulltext']}")
+    assert sum(why.values()) == frame - coded["life_science"] - coded["other"]
+    for (y0, y1), text, h, fs in (((Y[1], Y[2]), f"Excluded:{nl}labelled not medical{nl}n = {SCREEN['excluded_no']:,}",
+                                   0.085, 8),
+                                  ((Y[3], Y[4]), nofull, 0.165, 7)):
         ym = (y0 + y1) / 2
-        box(XR, ym, SW, text, h=0.085)
+        box(XR, ym, SW, text, h=h, fs=fs)
         ax.annotate("", xy=(XR - SW / 2, ym), xytext=(X, ym), arrowprops=arrow)
     # non-candidates branch left from the first arrow and rejoin the frame from the left
     yb, hl = (Y[0] + Y[1]) / 2, 0.13
@@ -175,14 +296,18 @@ def fig1(p9: dict) -> None:
     ax.annotate("", xy=(XL, Y[1] + hl / 2), xytext=(XL, yb), arrowprops=arrow)
     ax.plot([XL, XL], [Y[1] - hl / 2, Y[3]], **line)
     ax.annotate("", xy=(X - W / 2, Y[3]), xytext=(XL, Y[3]), arrowprops=arrow)
-    save(fig, "fig1")
+    save(fig, "fig2")
 
 
 def forest_ax(ax, rows: list[tuple[str, dict]], xlabel: str, title: str | None = None) -> None:
+    hi = max(100 * x["ci"][1] for _, x in rows)
     for i, (_, x) in enumerate(reversed(rows)):
-        ax.plot([100 * x["ci"][0], 100 * x["ci"][1]], [i, i], color="black", lw=1)
-        ax.plot(100 * x["rd"], i, "s", color="black", ms=5)
-    ax.axvline(0, color="grey", lw=0.8, ls="--")
+        clear = x["ci"][0] > 0 or x["ci"][1] < 0  # interval excludes zero
+        ax.plot([100 * x["ci"][0], 100 * x["ci"][1]], [i, i], color=INK2, lw=1.6, solid_capstyle="round")
+        ax.plot(100 * x["rd"], i, "o", ms=6, color=INK if clear else "white", mec=INK, mew=1.2)
+        ax.text(hi + 2, i, f"{pts(x['rd'])} ({ci(x['ci'])})", va="center", fontsize=7.5, color=INK2)
+    ax.axvline(0, color=GRID, lw=0.8)
+    ax.set_xlim(right=hi + 20)
     ax.set_ylim(-0.6, len(rows) - 0.4)
     ax.set_yticks(range(len(rows)), [r[0] for r in reversed(rows)], fontsize=8.5)
     ax.set_xlabel(xlabel, fontsize=8.5)
@@ -199,13 +324,15 @@ def main() -> None:
     claims, adv, ext9 = load("p9_claims.json"), load("p9_adversarial.json"), load("p9_ext.json")
     more, emp = load("p9_more.json"), load("p9_empirical.json")
     tables = dict(table1=table1(p9), table2=table2(areas, ext, claims, adv, more), table3=table3(p9, ext9),
-                  table4=table4(p9, emp), table_s1=table_s1(p9))
+                  table4=table4(p9, emp), tablea1=table_s1(p9))
+    tables["captions"] = CAPTIONS
     (HERE / "tables.json").write_text(json.dumps(tables, indent=1, ensure_ascii=False), encoding="utf-8")
+    summary(p9, areas, ext, claims, more, emp)
     fig1(p9)
     fig, ax = plt.subplots(figsize=(6.3, 0.36 * len(INDICATORS) + 0.9))
     forest_ax(ax, [(label, dict(rd=p9["A9_3"][f]["mh_rd"], ci=p9["A9_3"][f]["mh_ci"])) for f, label in INDICATORS],
               "Medical minus other, percentage points (Mantel-Haenszel, 95% CI)")
-    save(fig, "fig2")
+    save(fig, "fig3")
     d = areas["PH9_d"]
     paper = [("Decided, unadjusted", d["unadjusted"]),
              ("Decided, clinical papers only", adv["F2"]["label_split"]["clinical"]),
@@ -222,7 +349,7 @@ def main() -> None:
     forest_ax(a1, paper, "", "(a) Paper level, attempted ICML 2026 papers")
     forest_ax(a2, claim, "Medical minus other, percentage points (95% CI)", "(b) Claim level")
     fig.tight_layout()
-    save(fig, "fig3")
+    save(fig, "fig4")
     missing = checks(p9, areas, ext, claims, adv, ext9, more, emp)
     for m in missing:
         print("NOT IN TEXT:", m, file=sys.stderr)
@@ -275,8 +402,11 @@ def checks(p9, areas, ext, claims, adv, ext9, more, emp) -> list[str]:
         f"{p9['adjudicated']:,} items",
         f"(adjusted {est(load('p9_posthoc.json')['PH9_b'])[:-1].replace(' (', ' points, ', 1)}; {load('p9_posthoc.json')['PH9_b']['n']} frame papers)",
         f"({load('p9_posthoc.json')['PH9_b']['distribution']['life_science']['listed_and_linked']} medical and {load('p9_posthoc.json')['PH9_b']['distribution']['other']['listed_and_linked']} other papers)",
-        f"only {pct(a3['claims']['life_science']['share'])}% of medical and {pct(a3['claims']['other']['share'])}% of other papers tie each main claim",
         f"({pct(a3['claims']['life_science']['share'])}% of medical versus {pct(a3['claims']['other']['share'])}% of other papers)",
+        f"Only {pct(a3['claims']['life_science']['share'])}% of medical and {pct(a3['claims']['other']['share'])}% of other papers did so",
+        f"Access could not be coded from the text for {a3['main_data_access']['life_science']['unclear']} of {a3['main_data_access']['life_science']['n']:,} medical papers",
+        f"Weights were unstated in {a3['weights_release']['life_science']['unclear']:,} of {a3['weights_release']['life_science']['n']:,} medical papers",
+        f"The compute tier was unstated in {a3['compute_tier']['life_science']['distribution']['not_stated']:,} of {a3['compute_tier']['life_science']['n']:,} medical papers",
     ]
     return [w for w in want if w not in TEXT]
 
