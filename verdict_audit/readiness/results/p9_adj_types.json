@@ -1,0 +1,63 @@
+{
+ "note": "9-28",
+ "post_hoc": true,
+ "fields": {
+  "variance": {
+   "n": 729,
+   "label_pairs": {
+    "no vs unclear": 665,
+    "unclear vs yes": 45,
+    "no vs yes": 19
+   },
+   "silence_pairs": 665,
+   "content_pairs": 64,
+   "silence_resolved_not_reported": {
+    "all": [
+     625,
+     665
+    ],
+    "life_science": [
+     264,
+     287
+    ],
+    "other": [
+     361,
+     378
+    ]
+   }
+  },
+  "compute": {
+   "n": 792,
+   "label_pairs": {
+    "none vs unclear": 696,
+    "amount vs hardware_only": 35,
+    "amount vs unclear": 23,
+    "hardware_only vs unclear": 22,
+    "hardware_only vs none": 12,
+    "amount vs none": 4
+   },
+   "silence_pairs": 696,
+   "content_pairs": 96,
+   "silence_resolved_not_reported": {
+    "all": [
+     563,
+     696
+    ],
+    "life_science": [
+     274,
+     345
+    ],
+    "other": [
+     289,
+     351
+    ]
+   }
+  }
+ },
+ "reference_standard": {
+  "weights_used": 9,
+  "code_used": 10,
+  "data_obtained": 13
+ },
+ "total_adjudicated": 1553
+}

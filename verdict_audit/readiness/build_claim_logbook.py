@@ -27,6 +27,7 @@ PRODUCER = {
     "p9_adversarial.json": "posthoc_p9_adversarial.py", "p9_ext.json": "analyze_p9_ext.py",
     "p9_more.json": "posthoc_p9_more.py", "p9_empirical.json": "posthoc_p9_empirical.py",
     "p9_posthoc.json": "posthoc_p9.py", "p9_topics.json": "posthoc_p9_topics.py", "p9_axes.json": "posthoc_p9_axes.py",
+    "p9_adj_types.json": "posthoc_p9_adjudication_types.py",
 }
 # Arguments of checks() and checks_posthoc() -> result file, as main() in build_assets.py loads them.
 ARGS = {

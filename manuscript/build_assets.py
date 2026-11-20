@@ -149,6 +149,7 @@ def load(name: str) -> dict:
     return json.loads((RES / name).read_text(encoding="utf-8"))
 
 
+
 def pct(x: float) -> str:
     return f"{100 * x:.1f}"
 
@@ -369,6 +370,10 @@ def checks(p9, areas, ext, claims, adv, ext9, more, emp) -> list[str]:
     pair = lambda x: f"{pts(x['rd'])}, {ci(x['ci'])}"
     s1 = ext["E1"]["first_team_strength"]
     f2, e4, k1, k3, a4 = adv["F2"], ext["E4"], claims["K1"], claims["K3"], p9["A9_4"]
+    adj = load("p9_adj_types.json")  # Note 9-28
+    av, ac = adj["fields"]["variance"], adj["fields"]["compute"]
+    rv, rc = av["silence_resolved_not_reported"], ac["silence_resolved_not_reported"]
+    pc = lambda p: f"{100 * p[0] / p[1]:.1f}%"
     want = [
         # Reported practices
         f"code release ({sh('code', 'life_science')}% versus {sh('code', 'other')}%; pooled difference "
@@ -434,7 +439,14 @@ def checks(p9, areas, ext, claims, adv, ext9, more, emp) -> list[str]:
         f"kappas were {ext9['pooled']['code_vs_code_used']['kappa']:.2f} (n = {ext9['pooled']['code_vs_code_used']['n']})",
         f"(kappa {a4['neurips_checklist_item5_vs_code']['kappa']:.2f}, n = {a4['neurips_checklist_item5_vs_code']['n']})",
         # Methods and recommendations
-        f"{p9['adjudicated']:,} disagreements",
+        f"all {av['n'] + ac['n']:,} disagreements ({av['n']} variance, {ac['n']} compute)",
+        f"For {av['silence_pairs']} of the {av['n']} variance and {ac['silence_pairs']} of the {ac['n']} compute",
+        f"not reported in {pc(rv['all'])} ({rv['all'][0]} of {rv['all'][1]}) and {pc(rc['all'])} "
+        f"({rc['all'][0]} of {rc['all'][1]})",
+        f"(variance {pc(rv['life_science'])} and {pc(rv['other'])}; compute {pc(rc['life_science'])} and "
+        f"{pc(rc['other'])})",
+        f"The remaining {av['content_pairs']} variance and {ac['content_pairs']} compute disagreements",
+        f"the {sum(adj['reference_standard'][k] for k in ('code_used', 'data_obtained', 'weights_used'))} disagreements were adjudicated",
         f"This mapping was present in {sh('claims', 'life_science')}% of medical papers and {sh('claims', 'other')}% "
         f"of other papers",
         f"Access could not be coded from the text for {a3['main_data_access']['life_science']['unclear']} of "
@@ -458,7 +470,20 @@ def checks_posthoc(top: dict, ax: dict) -> list[str]:
     share = lambda a, g, l: pct(ax["X1"][a][g]["all"]["labels"][l]["share"])
     both = lambda a, l: f"{share(a, 'life_science', l)}% versus {share(a, 'other', l)}%"
     x5 = lambda f, s: ax["X5"][f][s]
+    o, m = "other", "life_science"
     want = [
+        f"text ({share('modality', o, 'text')}%), images ({share('modality', o, 'image')}%) and no or synthetic data "
+        f"({share('modality', o, 'none_or_synthetic')}%) among other papers",
+        f"multimodal data ({share('modality', m, 'multimodal')}%), images ({share('modality', m, 'image')}%), molecular "
+        f"graphs ({share('modality', m, 'graph_molecule')}%) and time series ({share('modality', m, 'time_series')}%) "
+        f"among medical papers",
+        f"generative modeling ({share('method', o, 'generative_modeling')}%), optimization and efficiency "
+        f"({share('method', o, 'optimization_efficiency')}%) and supervised prediction "
+        f"({share('method', o, 'supervised_prediction')}%)",
+        f"with theory in {share('method', o, 'theory')}%",
+        f"generative modeling ({share('method', m, 'generative_modeling')}%), representation learning "
+        f"({share('method', m, 'representation_learning')}%) and supervised prediction "
+        f"({share('method', m, 'supervised_prediction')}%) among medical papers",
         f"(Notes 9-24 and 9-26)",
         f"each of the {top['n']:,} medical papers",
         f"coded all {ax['n']:,} papers",

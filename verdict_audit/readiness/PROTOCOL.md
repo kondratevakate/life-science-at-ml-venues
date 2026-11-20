@@ -1025,3 +1025,19 @@ axes and both groups. Post hoc and exploratory, like Note 9-24.
   +11.7, variance +21.2 and +24.4 percentage points); weights shrink (+20.3, +14.3) but stay above 0; open main data
   falls from +13.5 to +4.7 (0.9 to 8.7) with method and reverses to -6.1 (-10.3 to -2.0) with modality: within the
   same data type, medical papers do not report open main data more often. No L9 label changes.
+
+## Note 9-28 (2026-11-20, post hoc, descriptive, written after computing)
+
+A co-author's review comment (Overleaf, 2026-11-09) asked what the coders disagreed on. Descriptive only; no
+estimate, interval or label changes. Script `posthoc_p9_adjudication_types.py`, output `results/p9_adj_types.json`
+(identical under PYTHONHASHSEED 0 and 1). The counts were first computed in a scratch script on 2026-11-20 and
+quoted in a reply to the comment before this note was written.
+
+* Units: the 1,553 rows of `codes/p9/adjudication.csv`: 729 variance and 792 compute full-text disagreements, plus
+  32 reference-standard disagreements (code_used 10, data_obtained 13, weights_used 9). The manuscript had called
+  all 1,553 variance and compute disagreements; corrected to 1,521 plus 32.
+* Rule: a pair of the field's "not reported" label (variance `no`, compute `none`) with `unclear` is a disagreement
+  about a paper whose excerpt does not state the practice; every other pair concerns content.
+* Result: variance 665 of 729 silence pairs, resolved as `no` in 625 (medical 264 of 287, other 361 of 378);
+  compute 696 of 792, resolved as `none` in 563 (medical 274 of 345, other 289 of 351). Content pairs: 64 variance,
+  96 compute.
