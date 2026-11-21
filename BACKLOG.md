@@ -2,7 +2,7 @@
 
 ## Journal paper (added 2026-11-20)
 
-Kate: «в беклог надо положить план по журнальной статье, мб ее усилить вторым постером который про AI scientist».
+Kate (2026-11-20, translated): "put the plan for the journal paper in the backlog; maybe strengthen it with the second poster, the one about the AI scientist".
 
 **Target.** Nature Machine Intelligence, article type Analysis (main text up to 3,500 words, abstract 100-150 words,
 up to 6 display items, about 50 references). Fallback PLOS Biology Meta-Research Article; free alternative TMLR.
