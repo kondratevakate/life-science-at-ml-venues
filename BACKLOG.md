@@ -4,9 +4,13 @@
 
 Kate (2026-11-20, translated): "put the plan for the journal paper in the backlog; maybe strengthen it with the second poster, the one about the AI scientist".
 
-**Target.** Nature Machine Intelligence, article type Analysis (main text up to 3,500 words, abstract 100-150 words,
-up to 6 display items, about 50 references). Fallback PLOS Biology Meta-Research Article; free alternative TMLR.
-medRxiv preprint stays allowed (disclose DOI and licence at submission).
+**Target (revised 2026-11-22, Kate's choice).** Nature presubmission enquiry first, then PNAS. 2026 precedents:
+Nature Articles on AI-scientist systems (Lu et al. 10.1038/s41586-026-10265-5; Gottweis et al.
+10.1038/s41586-026-10644-y; Ghareeb et al. 10.1038/s41586-026-10652-y; Miao et al., Paper2Agent,
+10.1038/s41586-026-11044-y) and PNAS on AI vs human reproducibility assessment (Brodeur et al.
+10.1073/pnas.2524747123). Fallbacks in the same genre: Royal Society Open Science (10.1098/rsos.251997), Research
+Integrity and Peer Review (10.1186/s41073-026-00266-3), Nature Machine Intelligence Analysis (only a 2021
+precedent). For Nature or PNAS the cheap AI checker (below) likely belongs in this paper, not a second one.
 
 **Plan.**
 1. Quick fixes without new computation: one NeurIPS checklist kappa (0.21 vs 0.22); pooled code kappa 0.28 as the
