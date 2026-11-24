@@ -1041,3 +1041,112 @@ quoted in a reply to the comment before this note was written.
 * Result: variance 665 of 729 silence pairs, resolved as `no` in 625 (medical 264 of 287, other 361 of 378);
   compute 696 of 792, resolved as `none` in 563 (medical 274 of 345, other 289 of 351). Content pairs: 64 variance,
   96 compute.
+
+## Note 9-29 (2026-11-24, design of the journal-paper experiments, frozen before computing)
+
+Kate asked to freeze the experiment design for the journal version (working frame "verified is not valid": what
+agents, teams and expert people each catch when ML papers are reproduced at scale). Notes 9-30 to 9-33 define four
+questions. All are post hoc with respect to Protocol 9 and reported as such. Thresholds in the reading rules were
+proposed by Claude and frozen on Kate's instruction of 2026-11-24.
+
+* Disclosure. Before this note, crude counts were computed on the full verdict snapshot without the exclusions below
+  and quoted in chat and in `BACKLOG.md`: 2,118 judged papers, 973 with two or more team namespaces (313 with six or
+  more), 547 of the 973 with teams disagreeing on whether any claim was decided; ICML 2026 frame papers with at least
+  one verified claim, 51 medical and 67 other. No other quantity in Notes 9-30 to 9-33 was computed.
+* Common units unless stated: attempted ICML 2026 papers as in Note 9-10 (protocol 8 verdict snapshot of 2026-10-27,
+  author's namespace excluded, candidates labelled `no` excluded); team = space namespace; a team's verdict on a paper
+  = its latest logbook (as Note 9-13 E1); medical = protocol 7 label clinical or life_science. Bootstrap 2,000
+  resamples over papers within group, seed 20261124; results must be identical under PYTHONHASHSEED 0 and 1.
+* Order: 9-30 and 9-33 use data in hand; 9-31 needs a download (RECLAIM) that Kate has not yet approved; 9-32 needs
+  expert people who have not yet agreed. No person is named here before they agree.
+
+## Note 9-30 (2026-11-24, RQ1 reliability of agentic verdicts across teams, frozen before computing)
+
+Question: how often do independent teams reach different verdicts on the same paper, and how many independent
+attempts give a stable verdict? Script `posthoc_p9_reliability.py`, output `results/p9_reliability.json`.
+
+* Units: common units with at least two distinct teams. Paper-level outcome per team: decided (at least one verified
+  or falsified claim). Claim-level outcome per team: verdict on each anchored claim (`claims_anchored.json`), four
+  categories (verified, falsified, toy, inconclusive); claims rated by fewer than two teams are excluded and counted.
+* R1a: share of papers with discordant teams; Krippendorff's alpha (nominal) for paper-level decided across teams.
+* R1b: Krippendorff's alpha (nominal) for claim-level verdicts across teams, overall and by group.
+* R1c: mixed logistic model decided ~ 1 + (1 | paper) + (1 | team); variance shares (latent-scale ICC) for paper and
+  team. The judge is the same model for all logbooks, so the team part includes judge-by-logbook variation; the
+  judge's own repeatability is taken from the cited external estimate, not re-measured.
+* R1d: attempts needed. Spearman-Brown on the paper-level reliability for the number of teams k giving reliability
+  0.80; and, on papers with at least six teams, the agreement of the majority verdict of k randomly drawn teams
+  (k = 1 to 5, 200 draws per paper) with the majority of the remaining teams.
+* By group: R1a to R1d for medical and other papers, difference in alpha with bootstrap CI.
+* Reading rule: "one verdict is not enough" is supported if the paper-level alpha CI upper bound is below 0.667;
+  medical papers need more attempts if the difference in alpha has a CI excluding 0.
+
+## Note 9-31 (2026-11-24, RQ2 cost and triage, frozen before computing)
+
+Question: does the cheap static coding of a paper predict whether runs will decide its claims, so that a pre-screen
+can save runs? Script `posthoc_p9_triage.py`, output `results/p9_triage.json`.
+
+* T-a, ICML 2026: frame papers in the common units with final P9 codes. Outcome: decided by any team; secondary,
+  decided by the first team's first logbook. Predictors fixed now: code, main_data_access, weights_release, claims,
+  variance, environment, compute_tier, data_scale (`unclear` and `not_stated` as their own levels), plus group.
+  Logistic regression; repeated 5-fold cross-validation (20 repeats, seed 20261124); AUC with bootstrap CI;
+  comparators: group only, and first-team strength only (Note 9-13). Triage: share of attempts a screen could skip at
+  a threshold that keeps 90% of decided papers.
+* T-b, RECLAIM (`Mithilss/reclaim`, test split, 100 NeurIPS 2025 papers, CC BY 4.0), only after Kate approves the
+  download: full texts and excerpts exactly as Protocol 9; unchanged coder prompt, coder 1 on all, coder 2 on a seeded
+  25%, adjudication as Note 9-6. Outcomes from RECLAIM's own release: tier (Run, Retrain, Reimplement) and per-paper
+  reproduction success as reported by its authors. Measures: agreement of our code and weights codes with the tier;
+  AUC of the T-a model (fitted on ICML 2026, not refitted) for RECLAIM success; overlap with our NeurIPS 2025 frame.
+* Reading rule: a pre-screen is useful if the cross-validated AUC is at least 0.70 with CI lower bound above 0.60 and
+  exceeds the group-only comparator; it transfers if the RECLAIM AUC CI lower bound is above 0.50.
+
+## Note 9-32 (2026-11-24, RQ3 scientific validity of verified papers by expert people, frozen before any paper is drawn)
+
+Question: among papers whose claims agents verified, how many carry threats to scientific validity that a rerun does
+not test, and did the agent notice them?
+
+* Units: ICML 2026 frame papers in the common units with at least one verified claim. Sample: all medical papers and
+  a random 50 other papers (seed 20261124, sorted ids); 10 further papers (5 per group, same seed, drawn first) form
+  a pilot used only to refine the codebook and are excluded from the analysis.
+* Instrument: codebook `codes/p9/validity/VALIDITY_CODEBOOK.md`, written and committed after the pilot and before any
+  main-sample paper is coded. Five threats, each present / absent / unclear with a quote and a page or section:
+  (a) leakage (split not at subject level, preprocessing or tuning on test data, test reuse); (b) shortcut or
+  confounding in the data (site, scanner, demographics, label proxies); (c) weak baselines (untuned, outdated,
+  missing an obvious comparator); (d) narrow evaluation (no external data, no variance); (e) conclusion broader than
+  the evidence (population, task, clinical claim). Items map to REFORMS and to the leakage taxonomy of ref 7. A threat
+  is major if it could change the verified claim's conclusion; the codebook gives examples.
+* Coders: two independent expert people per paper, blind to the judge's evidence text and, as far as the text
+  allows, to the group; a third expert adjudicates disagreements with a written reason. An LLM coder
+  (claude-sonnet-5-5, same codebook) codes every paper independently for comparison only.
+* "Agent noticed": a threat counts as noticed if the team's logbook or the judge's evidence mentions it; checked by
+  one expert on the adjudicated threats.
+* Outcomes: V1 share of papers with at least one major threat, Wilson CI, by group and the difference with bootstrap
+  CI; V2 share of major threats the agent noticed; V3 Cohen's kappa expert-expert per item and LLM-adjudicated per
+  item.
+* Reading rules: an item is reliable if expert-expert kappa is at least 0.60; unreliable items are reported but not
+  pooled. "Verified is not valid" is supported if V1 has a CI lower bound above 10% in either group. The LLM coder
+  can replace experts for an item only if its kappa with the adjudicated label is at least as high as the
+  expert-expert kappa.
+
+## Note 9-33 (2026-11-24, RQ4 where agents stall, frozen before any claim is coded)
+
+Question: why do claims end inconclusive or toy, and do the reasons differ for medical papers? Builder
+`build_p9_barriers.py`, codes in `codes/p9/barriers/`, analysis `posthoc_p9_barriers.py`,
+`results/p9_barriers.json`.
+
+* Units: every inconclusive or toy claim verdict in the common units (team's latest logbook). Text coded: the judge's
+  evidence string only (no title, paper id, group or team).
+* Categories (one per verdict): data_access (data not obtainable or not released), compute_scale (too large or slow
+  to run), code (missing, broken or incomplete), environment (dependencies, hardware, setup), not_checkable (the claim
+  as stated cannot be tested), incomplete_attempt (the team stopped or ran a reduced version without a stated
+  blocker), other. Prompt `codes/p9/barriers/BARRIER_PROMPT.md`, committed before coding.
+* Coding: two blind LLM coders (claude-sonnet-5-5), batches of 50; Cohen's kappa; every disagreement adjudicated as in
+  Note 9-6 (claude-opus-5-5). A seeded random 100 adjudicated verdicts are checked by one expert person; agreement
+  reported.
+* Analysis: B1 category shares by group, bootstrap CI of the medical minus other difference for each category; B2 on
+  frame papers, data_access share by coded main_data_access level; B3 upper bound of claims that become decidable if
+  one barrier is removed (share of inconclusive or toy claims with that barrier); B4 descriptive ranking of barriers
+  by B3 per unit cost, using published cost figures (RECLAIM, AAAI-26 pilot, ReproRepo, PaperBench), stated as
+  illustration, not estimate.
+* Reading rule: data access is the leading barrier for medical papers if its medical share is the largest category
+  and its medical minus other difference has a CI lower bound above 0. Kappa below 0.60 marks the coding as
+  unreliable and the result is reported as such.
