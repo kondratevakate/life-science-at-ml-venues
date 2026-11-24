@@ -60,3 +60,41 @@ Open Science NL might also fit Kate's own grant; eligibility not checked.
 
 **Needed data.** MLRC outcomes are not aggregated anywhere found so far; coding human challenge reports is the
 costly part. Reopen when the framing is chosen (BACKLOG step 2).
+
+## Framing option: "verified is not valid" (added 2026-11-24, concrete RQs)
+
+Nothing is frozen or run; each RQ becomes a protocol note with its criterion before any computing or coding.
+Counts below are a crude first look (all logbooks, the first author's own not yet excluded, no deduplication).
+
+**RQ1 reliability.** 2,118 judged papers; 973 attempted by two or more teams (313 by six or more); in 547 of the 973
+the teams disagree on whether any claim was decided. Measure: between-team agreement on paper and claim verdicts,
+variance split into paper, team and judge parts, and the number of independent attempts needed for a stable verdict.
+
+**RQ2 cost and triage.** Does the cheap static coding of the paper text predict the outcome of runs (ICML 2026
+verdicts; RECLAIM per-paper outcomes)? Report the share of runs a pre-screen would save.
+
+**RQ3 scientific validity, by people.**
+- Units: ICML 2026 frame papers with at least one verified claim: 51 health and life-science and 67 other (crude).
+  Sample: all health papers plus a seeded random 50 other papers, about 100 papers.
+- Instrument (fixed before coding): five validity threats, each coded present / absent / unclear with a quote:
+  (a) leakage (patient-level split, preprocessing or tuning on test data, test reuse); (b) shortcut or confounding
+  in the data (site, scanner, demographics, label proxies); (c) weak baselines (untuned, outdated, missing obvious
+  comparator); (d) evaluation scope (no external data, no variance); (e) conclusion broader than the evidence
+  (population, task, clinical claim). Items mapped to REFORMS and to the Kapoor and Narayanan leakage taxonomy.
+- Procedure: two independent expert coders per paper, blind to group labels as far as possible and to the judge's
+  evidence text; disagreements adjudicated by a third expert; agreement reported per item.
+- Outcomes: share of verified papers with at least one major threat, by group; whether the logbook or the judge
+  mentioned the threat (did the agent catch it); agreement of our LLM coder with the experts on the same checklist.
+- People: expert coders in dataset validity, evaluation and clinical imaging; names only after they agree.
+  Effort: about 100 papers x 2 coders; minutes per paper not yet estimated.
+
+**RQ4 where agents stall in life science.**
+- Units: all inconclusive and toy claim verdicts of attempted ICML 2026 papers.
+- Measure: classify the judge's evidence text for each such claim into one barrier: data not accessible; compute or
+  scale; code missing or broken; environment; claim not checkable as stated; attempt incomplete. LLM coding with a
+  human-checked subsample.
+- Analysis: barrier shares by group; link to coded main data access (open, credentialed, private, unclear);
+  upper bound of claims that would become decidable if one barrier were removed.
+- Policy output: barriers ranked by claims unlocked per unit cost, using published cost anchors (RECLAIM, AAAI-26,
+  ReproRepo, PaperBench); maps to what funders should pay for (access infrastructure, compute, author release).
+- Optional test: IDC data access for imaging papers whose claims were inconclusive for lack of data.
