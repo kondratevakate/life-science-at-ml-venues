@@ -59,6 +59,25 @@ Kate's view (2026-11-22): recommendations without testing or implementation are 
   official in `openai/preparedness`), `Just-Curieous/EXP-Bench`, `ChristineYe8/ReplicationBench`.
 - Not found on Hugging Face: ReproRepo data, the Brodeur replication-games data, an MLRC or ReScience summary.
 
+### Dataset plan to strengthen the paper (agreed with Kate 2026-11-24, nothing run yet)
+
+In order; freeze each as a protocol note with a success criterion before computing:
+1. ICML 2026 data we already hold (free): agreement of verdicts between teams on the same paper; and, if the
+   snapshot holds them, the logbook authors' own verdicts against the judge's (RECLAIM's analogue: 128 claimed vs
+   73 confirmed).
+2. RECLAIM (`Mithilss/reclaim`, 100 NeurIPS 2025 papers, CC BY 4.0): run our unchanged full-text coder prompt on
+   the 100 papers and test whether coded practices (code, weights, data access, claims linked) predict RECLAIM's
+   per-paper outcome and match its release tier. Works even without overlap with our frame; also count the overlap.
+   Cost: one small download plus tokens for 100 papers (estimate: a few USD). Answers the review point on
+   external reproductions with a fixed, preregistered set.
+3. NeurIPS 2026 ML Intern Reproductions: after the hackathon (ends 13 Dec 2026 per web search), use its logbooks
+   as a second venue and wave; NeurIPS 2026 full texts are now public, which also fills the 464 frame papers that
+   had no full text.
+4. REPRO-Bench (`chuxuan/REPRO-Bench`, 112 papers with human reproducibility scores): human reference for the
+   cheap-checker baseline.
+5. IDC through MCP: optional intervention pilot, only after a cost estimate.
+PaperBench, EXP-Bench and CORE-Bench serve as context only (2024 or non-venue papers).
+
 ## New and ongoing (checked 2026-11-23)
 
 - NeurIPS 2026 ML Intern Reproductions (Hugging Face org `Neurips-2026-MLIntern-Repro`): dataset `papers` with
