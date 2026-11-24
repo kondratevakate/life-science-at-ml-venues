@@ -1150,3 +1150,14 @@ Question: why do claims end inconclusive or toy, and do the reasons differ for m
 * Reading rule: data access is the leading barrier for medical papers if its medical share is the largest category
   and its medical minus other difference has a CI lower bound above 0. Kappa below 0.60 marks the coding as
   unreliable and the result is reported as such.
+
+## Note 9-34 (2026-11-24, correction to Note 9-29 before anything under Notes 9-30 to 9-33 was computed)
+
+Note 9-29 named the verdict source as "protocol 8 verdict snapshot of 2026-10-27". The protocol 8 snapshot used by
+every earlier analysis (Notes 9-9 to 9-22) is the hash-pinned confirmation snapshot of 2026-10-17
+(`data/verdicts_confirmation_2026-10-17/verdicts.json`, read through `p8_common.claim_verdicts`, which keeps the latest
+logbook per team and paper and excludes the author's namespace). Notes 9-30 to 9-33 use that snapshot. The anchored
+claim lists for Note 9-30 R1b are read from the challenge's `claims_anchored.json` in the registered data snapshot
+`C:\Projects\data\datasets\literature\icml2026-challenge-snapshots6-10-27aw\live\claims_anchored.json`; a team
+claim is matched to an anchored claim by normalised text, and unmatched claims are excluded and counted. The crude
+counts disclosed in Note 9-29 came from the 2026-10-27 live verdict file and are not results of Notes 9-30 to 9-33.
