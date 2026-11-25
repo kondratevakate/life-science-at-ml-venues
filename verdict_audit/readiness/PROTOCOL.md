@@ -1161,3 +1161,16 @@ claim lists for Note 9-30 R1b are read from the challenge's `claims_anchored.jso
 `C:\Projects\data\datasets\literature\icml2026-challenge-snapshots6-10-27aw\live\claims_anchored.json`; a team
 claim is matched to an anchored claim by normalised text, and unmatched claims are excluded and counted. The crude
 counts disclosed in Note 9-29 came from the 2026-10-27 live verdict file and are not results of Notes 9-30 to 9-33.
+
+## Note 9-35 (2026-11-25, result of Note 9-30, written after the analysis was run)
+
+`posthoc_p9_reliability.py` gives identical `results/p9_reliability.json` under PYTHONHASHSEED 0 and 1 (mixed-model
+values rounded to 6 decimals; the variational fit differed in the 8th decimal across processes, a deviation in
+reporting only). 1,931 attempted papers; 903 with two or more teams (308 with six or more); 31,419 claim rows matched
+to anchored claims, 929 unmatched and excluded. R1a: 55.6% of the 903 papers discordant on decided; paper-level alpha
+0.21 (95% CI 0.18 to 0.25). R1b: claim-level alpha 0.21 (0.19 to 0.22) over 4,520 claims rated by two or more teams.
+R1c: latent-scale variance shares paper 0.147, team 0.478. R1d: Spearman-Brown gives about 15 teams for reliability
+0.80; on the 308 papers with six or more teams, majority-of-k agreement with the remaining teams is 0.82 (k = 1) to
+0.89 (k = 5). By group: medical papers 35 (alpha 0.40), other 868 (alpha 0.20); difference +0.20 (-0.10 to +0.44).
+Reading rules: "one verdict is not enough" is supported; a medical difference is not established. RQ4 coding (Note
+9-33) is deferred by Kate on 2026-11-25; nothing has been coded.
