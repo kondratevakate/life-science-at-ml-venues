@@ -1174,3 +1174,26 @@ R1c: latent-scale variance shares paper 0.147, team 0.478. R1d: Spearman-Brown g
 0.89 (k = 5). By group: medical papers 35 (alpha 0.40), other 868 (alpha 0.20); difference +0.20 (-0.10 to +0.44).
 Reading rules: "one verdict is not enough" is supported; a medical difference is not established. RQ4 coding (Note
 9-33) is deferred by Kate on 2026-11-25; nothing has been coded.
+
+## Note 9-36 (2026-11-25, cost accounting and run logging, frozen before the cost figures were read)
+
+Kate asked to count the cost explicitly and to record the models and everything we do in Trackio. Descriptive.
+
+* Source: Claude Code session logs of this workstation (`~/.claude/projects/**/*.jsonl`, subagent files). A
+  subagent is assigned to a coding task by the sheet path in its first user message (patterns in
+  `cost_accounting.py`); its token usage is the sum of `message.usage` over its assistant messages, one count per
+  message id (input, cache creation, cache read, output), by the model recorded in each message. Subagents whose
+  logs no longer exist on this machine are not counted and are reported as a gap. The orchestrating sessions (the
+  main threads that launched the coders) are not attributed to tasks and are reported separately if measurable.
+* Prices: Claude API list prices per million tokens on platform.claude.com/docs/en/about-claude/pricing, read on
+  2026-11-25: claude-sonnet-5-5 input 2, cache write 2.50 (5 minutes) or 4 (1 hour), cache read 0.10, output 10;
+  claude-opus-5-5 input 4, cache write 5 or 8, cache read 0.20, output 20. Cache writes are priced as a range
+  (5-minute rate as lower, 1-hour rate as upper bound) unless the log states the duration. Costs are API-equivalent:
+  the runs were made inside a Claude Code subscription, so the amount actually billed differs.
+* Reported per task: subagents, assistant messages, tokens by type, API-equivalent cost range, and cost per coded
+  unit (paper, claim or verdict) using the unit counts of the task's notes.
+* Run logging: every analysis and coding task of Protocol 9 from Note 9-28 on is logged as one run in the local
+  Trackio project `p9-journal-runs` (outside any logbook workspace), with config = note id, script, git commit,
+  model ids, prompt file and its SHA-256, seeds, unit counts; and metrics = the headline results and, where
+  measured, tokens and API-equivalent cost. Earlier coding tasks are logged retrospectively from their notes and
+  the cost scan, marked `retrospective`. The project stays local until Kate decides on publishing.
