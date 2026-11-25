@@ -97,7 +97,7 @@ PaperBench, EXP-Bench and CORE-Bench serve as context only (2024 or non-venue pa
 - RQ1 computed (`posthoc_p9_reliability.py`, `results/p9_reliability.json`): 903 papers with two or more teams;
   56% discordant on decided; paper-level alpha 0.21 (0.18 to 0.25), claim-level 0.21; about 15 teams for
   reliability 0.80; team 48% vs paper 15% of variance (mixed model); medical vs other alpha difference not
-  established. Determinism check under two hash seeds was running when this was written (mixed-model values
+  established. Identical under PYTHONHASHSEED 0 and 1 (mixed-model values
   rounded to 6 decimals because the variational fit differs in the 8th decimal).
 - RQ4 is a plan only (Kate, 2026-11-25: "not coding for now"): code all 14,980 inconclusive or toy verdicts (582
   medical) with two blind coders and adjudication; prompt committed at `codes/p9/barriers/BARRIER_PROMPT.md`; the

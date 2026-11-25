@@ -1,0 +1,87 @@
+{
+ "note": "9-30",
+ "post_hoc": true,
+ "attempted_papers": 1931,
+ "units_two_or_more_teams": 903,
+ "teams_per_paper": {
+  "1": 1028,
+  "2": 316,
+  "3": 132,
+  "4": 85,
+  "5": 62,
+  "6": 308
+ },
+ "claims": {
+  "claim_rows_matched": 31419,
+  "claim_rows_unmatched_excluded": 929
+ },
+ "all": {
+  "papers": 903,
+  "discordant_share": 0.5559246954595792,
+  "paper_alpha": 0.2123084021198849,
+  "claim_alpha": 0.20799635831149887,
+  "claim_units": 4520,
+  "k_for_reliability_080": 14.84051672030063,
+  "paper_alpha_ci": [
+   0.17636668463678978,
+   0.2514794145927407
+  ],
+  "claim_alpha_ci": [
+   0.19079270202893095,
+   0.2245876133356956
+  ]
+ },
+ "medical": {
+  "papers": 35,
+  "discordant_share": 0.37142857142857144,
+  "paper_alpha": 0.4027777777777777,
+  "claim_alpha": 0.32859968126572137,
+  "claim_units": 157,
+  "k_for_reliability_080": 5.9310344827586245
+ },
+ "other": {
+  "papers": 868,
+  "discordant_share": 0.5633640552995391,
+  "paper_alpha": 0.20058962841188632,
+  "claim_alpha": 0.20270220811207307,
+  "claim_units": 4363,
+  "k_for_reliability_080": 15.941210478671852
+ },
+ "diff_paper_alpha_medical_minus_other": {
+  "estimate": 0.20218814936589136,
+  "ci": [
+   -0.09530283869071958,
+   0.4379270821612642
+  ]
+ },
+ "diff_claim_alpha_medical_minus_other": {
+  "estimate": 0.1258974731536483,
+  "ci": [
+   -0.09834139802155177,
+   0.2819345030903856
+  ]
+ },
+ "R1c_mixed": {
+  "rows": 5122,
+  "var_paper": 1.285612,
+  "var_team": 4.183537,
+  "var_residual_latent": 3.289868,
+  "share_paper": 0.146776,
+  "share_team": 0.477626,
+  "method": "statsmodels BinomialBayesMixedGLM fit_vb; values rounded to 6 decimals"
+ },
+ "R1d_majority_of_k": {
+  "papers": 308,
+  "agreement_by_k": {
+   "1": 0.8156980519480519,
+   "2": 0.8125649350649351,
+   "3": 0.8851785714285715,
+   "4": 0.8724512987012987,
+   "5": 0.8877435064935065
+  }
+ },
+ "reading": {
+  "one_verdict_not_enough": true,
+  "medical_differs": false
+ }
+}
