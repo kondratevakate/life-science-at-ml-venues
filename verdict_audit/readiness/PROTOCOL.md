@@ -1197,3 +1197,16 @@ Kate asked to count the cost explicitly and to record the models and everything 
   model ids, prompt file and its SHA-256, seeds, unit counts; and metrics = the headline results and, where
   measured, tokens and API-equivalent cost. Earlier coding tasks are logged retrospectively from their notes and
   the cost scan, marked `retrospective`. The project stays local until Kate decides on publishing.
+
+## Note 9-37 (2026-11-25, result of Note 9-36, written after the scan)
+
+`cost_accounting.py` -> `results/p9_costs.json` (API-equivalent, prices read 2026-11-25). Found in local logs: 415
+coding subagents of 2026-10-19 to 2026-10-24. Cost ranges (5-minute to 1-hour cache-write rate): coder 1 full text
+USD 128 to 177 (3,278 papers, 0.039 to 0.054 per paper); coder 2 sample 36 to 51 (813 papers); coder 2 full 28 to
+39; full-text adjudication (claude-opus-5-5, a few calls on claude-opus-5) 62 to 86; reference coders 9 to 12; claim
+coders 3 to 4; extension coders 26 to 37; extension adjudication 17 to 24. Total for the found tasks USD 309 to 431.
+For coder 1, cache writes are 82 to 132 and cache reads 45 of the cost, output 0.66 and fresh input 0.01: the cost is
+the subagent's own context (instructions and tool scaffolding re-cached per subagent), not the paper text. Not found
+(gap): topic coding (9-24), axes coding (9-26), the 9-25 recovery coders and adjudicators, the claim adjudication,
+and all orchestrating main threads. All tasks and Notes 9-28, 9-30 and 9-33 are logged in the local Trackio project
+`p9-journal-runs` by `log_runs_trackio.py`.
