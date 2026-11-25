@@ -90,6 +90,20 @@ PaperBench, EXP-Bench and CORE-Bench serve as context only (2024 or non-venue pa
   Conference", agent audits with author declarations as explicit inputs. Closest to the claim-manifest standard.
 - arXiv 2609.11117: NLPCC 2026 Shared Task 11, agent-based experiment reproduction (AgentActionBench).
 
+## Journal-paper experiments (frozen 2026-11-24, Notes 9-29 to 9-34)
+
+- Design frozen before computing: RQ1 reliability across teams (9-30), RQ2 triage (9-31), RQ3 expert validity
+  (9-32), RQ4 barriers (9-33); 9-34 corrects the verdict snapshot to the pinned 2026-10-17 file.
+- RQ1 computed (`posthoc_p9_reliability.py`, `results/p9_reliability.json`): 903 papers with two or more teams;
+  56% discordant on decided; paper-level alpha 0.21 (0.18 to 0.25), claim-level 0.21; about 15 teams for
+  reliability 0.80; team 48% vs paper 15% of variance (mixed model); medical vs other alpha difference not
+  established. Determinism check under two hash seeds was running when this was written (mixed-model values
+  rounded to 6 decimals because the variational fit differs in the 8th decimal).
+- RQ4 is a plan only (Kate, 2026-11-25: "not coding for now"): code all 14,980 inconclusive or toy verdicts (582
+  medical) with two blind coders and adjudication; prompt committed at `codes/p9/barriers/BARRIER_PROMPT.md`; the
+  sheet builder `build_p9_barriers.py` is not written yet.
+- RQ2 waits for Kate's approval to download RECLAIM; RQ3 waits for expert coders who agree.
+
 ## Open items
 
 - Nature presubmission enquiry: framing decision (lead with reported vs used, not the verdict gap), referenced
